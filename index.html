@@ -5,20 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kasper Dance Crew</title>
 
-    <!-- Bulma CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
     />
-    <!-- Font Awesome (optional) -->
     <script
       src="https://kit.fontawesome.com/8a80b728dc.js"
       crossorigin="anonymous"
     ></script>
   </head>
-  <body>
-    <!-- NAVBAR -->
-    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+  <body class="has-background-black has-text-white">
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
       <div class="container">
         <div class="navbar-brand">
           <a class="navbar-item has-text-weight-bold" href="index.html">
@@ -30,10 +27,9 @@
             Kasper Dance Crew
           </a>
 
-          <!-- Burger for mobile -->
           <a
             role="button"
-            class="navbar-burger"
+            class="navbar-burger has-text-white"
             aria-label="menu"
             aria-expanded="false"
             data-target="mainNav"
@@ -44,7 +40,7 @@
           </a>
         </div>
 
-        <div id="mainNav" class="navbar-menu">
+        <div id="mainNav" class="navbar-menu has-background-black">
           <div class="navbar-start">
             <a class="navbar-item" href="index.html">Home</a>
             <a class="navbar-item" href="about.html">About Us</a>
@@ -55,50 +51,34 @@
       </div>
     </nav>
 
-    <!-- HERO / HEADER -->
-    <header class="hero is-small">
+    <header class="hero is-medium has-background-grey-dark">
       <div class="hero-body">
         <div class="container has-text-centered">
-          <h1 class="title is-3 has-text-black">Kasper Dance Crew</h1>
-          <!-- Add a subtitle or tagline here if you want -->
-          <!-- <p class="subtitle is-5">Street • Contemporary • Hip-Hop</p> -->
+          <h1 class="title is-1 has-text-white">Kasper Dance Crew</h1>
+          <p class="subtitle is-4 has-text-grey-light">
+            UW-Madison's Premier K-pop and Hip-Hop Dance Team
+          </p>
         </div>
       </div>
     </header>
 
-    <!-- MAIN CONTENT placeholder -->
     <section class="section">
-      <div class="container">
+      <div class="container has-text-centered">
+        <h2 class="title is-3 has-text-white mb-5">Welcome</h2>
         <p>Thank you for visiting our site.</p>
         <br />
         <br />
         <p>Please return later, and we will have updated information!</p>
       </div>
     </section>
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <br />
-    <!-- FOOTER -->
-    <footer class="footer">
+    
+    <footer class="footer has-background-dark has-text-white">
       <div class="content has-text-centered">
-        <a href="http://www.facebook.com">
-          <i class="fa-brands fa-facebook-f fa-2x has-text-black"></i>
+        <a href="http://www.facebook.com" class="mr-3">
+          <i class="fa-brands fa-facebook-f fa-2x has-text-white"></i>
         </a>
         <a href="http://www.x.com">
-          <i class="fa-brands fa-twitter fa-2x has-text-black"></i>
+          <i class="fa-brands fa-twitter fa-2x has-text-white"></i>
         </a>
       </div>
       <div class="content has-text-centered">
@@ -106,7 +86,6 @@
       </div>
     </footer>
 
-    <!-- JS to toggle the burger on mobile -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const burger = document.querySelector(".navbar-burger");
