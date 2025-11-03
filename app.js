@@ -53,6 +53,7 @@ document.querySelector("#sign_up_form").addEventListener("submit", (e) => {
       email: user_email,
       password: user_pass,
     };
+    alert("Welcome! We are glad you joined us!");
   });
 });
 
@@ -69,6 +70,7 @@ document.querySelector("#sign_in_form").addEventListener("submit", (e) => {
     .then((user) => {
       document.querySelector("#smodal2").classList.remove("is-active");
       document.querySelector("#sign_in_form").reset();
+      alert("Welcome Back!");
     })
     .catch((e) => {
       alert("incorrect login!");
