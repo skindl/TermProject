@@ -6,8 +6,6 @@ signupbtn.addEventListener("click", () => {
   // reference to the sign up model
   let smodal = document.querySelector("#smodal");
 
-  console.log(smodal);
-
   // add the is-active to the model (function: add, class being added: is-active)
   smodal.classList.add("is-active");
 });
@@ -16,12 +14,10 @@ signupbtn.addEventListener("click", () => {
 signinbtn.addEventListener("click", () => {
   // show the modal by adding the is-active class to the modal div
   // reference to the sign up model
-  let smodal = document.querySelector("#smodal2");
-
-  console.log(smodal);
+  let smodal2 = document.querySelector("#smodal2");
 
   // add the is-active to the model (function: add, class being added: is-active)
-  smodal.classList.add("is-active");
+  smodal2.classList.add("is-active");
 });
 
 // hide the modal (sign up)
@@ -34,4 +30,49 @@ document.querySelector("#modalbg").addEventListener("click", () => {
 document.querySelector("#modalbg2").addEventListener("click", () => {
   // remove the is-active class from the modal
   document.querySelector("#smodal2").classList.remove("is-active");
+});
+
+//-----------------------------SIGN UP FORM--------------------------------------
+document.querySelector("#sign_up_form").addEventListener("submit", (e) => {
+  //prevent auto refresh
+  e.preventDefault();
+
+  //capture the user email and password
+  let user_email = document.querySelector("#sign_email").value;
+  let user_pass = document.querySelector("#sign_pass").value;
+
+  //finish user authentication
+  auth.createUserWithEmailAndPassword(user_email, user_pass).then(() => {
+    //hide the modal
+    document.querySelector("#smodal").classList.remove("is-active");
+
+    //clear the form
+    document.querySelector("#sign_up_form").reset();
+
+    let new_user = {
+      email: user_email,
+      password: user_pass,
+    };
+  });
+});
+
+//----------------------------------------------------------------------------------
+
+//---------------------------------SIGN IN------------------------------------------
+
+document.querySelector("#sign_in_form").addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  let user_email = document.querySelector("#sign_in_email").value;
+  let user_pass = document.querySelector("#sign_in_pass").value;
+
+  auth
+    .signInWithEmailAndPassword(user_email, user_pass)
+    .then((user) => {
+      document.querySelector("#smodal2").classList.remove("is-active");
+      document.querySelector("#sign_in_form").reset();
+    })
+    .catch((e) => {
+      alert("incorrect login!");
+    });
 });
