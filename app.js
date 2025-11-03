@@ -56,8 +56,6 @@ document.querySelector("#sign_up_form").addEventListener("submit", (e) => {
   });
 });
 
-//----------------------------------------------------------------------------------
-
 //---------------------------------SIGN IN------------------------------------------
 
 document.querySelector("#sign_in_form").addEventListener("submit", (e) => {
