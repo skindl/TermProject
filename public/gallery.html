@@ -61,32 +61,44 @@
     <section class="section">
       <div class="container">
         <div class="columns is-multiline is-centered">
-          <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
             <figure class="image is-4by3">
               <img src="images/img1.png" alt="image 1" />
             </figure>
           </div>
-          <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
             <figure class="image is-4by3">
               <img src="images/img2.png" alt="image 2" />
             </figure>
           </div>
-          <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
             <figure class="image is-4by3">
               <img src="images/img3.png" alt="image 3" />
             </figure>
           </div>
-          <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
             <figure class="image is-4by3">
               <img src="images/img4.png" alt="image 4" />
             </figure>
           </div>
-          <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
             <figure class="image is-4by3">
               <img src="images/img5.png" alt="image 5" />
             </figure>
           </div>
-          <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
             <figure class="image is-4by3">
               <img src="images/img6.png" alt="image 6" />
             </figure>
@@ -120,5 +132,166 @@
         }
       });
     </script>
+    <!-- sign up modal -->
+    <div class="modal" id="smodal">
+      <div class="modal-background" id="modalbg"></div>
+      <div class="modal-content has-background-white p-4">
+        <p class="is-size-3 has-text-weight-semibold has-text-centered">
+          Sign Up Form!
+        </p>
+        <form id="sign_up_form">
+          <!-- email -->
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                class="input"
+                id="sign_email"
+                type="email"
+                placeholder="Email input"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+              <span class="icon is-small is-right">
+                <i class="fas fa-exclamation-triangle"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- password -->
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input type="password" id="sign_pass" class="input" />
+            </div>
+          </div>
+
+          <p class="has-text-centered">
+            <!-- submit and reset buttons -->
+            <input type="submit" value="Submit" class="button in-primary" />
+
+            <input type="reset" value="Reset" class="button is-success" />
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- sign in modal -->
+    <div class="modal" id="smodal2">
+      <div class="modal-background" id="modalbg2"></div>
+      <div class="modal-content has-background-white p-4">
+        <p class="is-size-3 has-text-weight-semibold has-text-centered">
+          Sign In Form!
+        </p>
+        <form id="sign_in_form">
+          <!-- email -->
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                class="input"
+                id="sign_in_email"
+                type="email"
+                placeholder="Email input"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+              <span class="icon is-small is-right">
+                <i class="fas fa-exclamation-triangle"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- password -->
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input type="password" id="sign_in_pass" class="input" />
+            </div>
+          </div>
+
+          <p class="has-text-centered">
+            <!-- submit and reset buttons -->
+            <input type="submit" value="Submit" class="button in-primary" />
+
+            <input type="reset" value="Reset" class="button is-success" />
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <!-- header -->
+    <header class="hero is-medium has-background-grey-dark">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title is-1 has-text-white">Kasper Dance Crew</h1>
+          <p class="subtitle is-4 has-text-grey-light">
+            UW-Madison's Premier K-pop and Hip-Hop Dance Team
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container has-text-centered">
+        <h2 class="title is-3 has-text-white mb-5">Welcome!</h2>
+        <p>Thank you for visiting our site.</p>
+        <br />
+        <br />
+        <p>Please return later, and we will have updated information!</p>
+      </div>
+    </section>
+
+    <footer class="footer has-background-dark has-text-white">
+      <div class="content has-text-centered">
+        <a href="http://www.facebook.com" class="mr-3">
+          <i class="fa-brands fa-facebook-f fa-2x has-text-white"></i>
+        </a>
+        <a href="http://www.x.com">
+          <i class="fa-brands fa-twitter fa-2x has-text-white"></i>
+        </a>
+      </div>
+      <div class="content has-text-centered">
+        <p><i>&copy; 2025 Kasper Dance Crew</i></p>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const burger = document.querySelector(".navbar-burger");
+        const menu = document.getElementById("mainNav");
+        if (burger && menu) {
+          burger.addEventListener("click", () => {
+            burger.classList.toggle("is-active");
+            menu.classList.toggle("is-active");
+          });
+        }
+      });
+    </script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <!-- Firebase Configuration and Initialization -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyD2Gbgw2_-1qiYbRiZB4jwaEztLfIPC5aU",
+        authDomain: "is-424-group-project.firebaseapp.com",
+        projectId: "is-424-group-project",
+        storageBucket: "is-424-group-project.firebasestorage.app",
+        messagingSenderId: "954935917465",
+        appId: "1:954935917465:web:7024e1ce6cce39f822f108",
+        measurementId: "G-2ERS9FXKMM",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+    </script>
+
+    <!-- Your app logic -->
+    <script src="app.js"></script>
   </body>
 </html>
