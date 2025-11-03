@@ -46,10 +46,90 @@
             <a class="navbar-item" href="about.html">About Us</a>
             <a class="navbar-item" href="gallery.html">Gallery</a>
             <a class="navbar-item" href="contact.html">Contact Us</a>
+            <div class="navbar-end">
+              <div class="navbar-item">
+                <div class="buttons">
+                  <a href="#" id="signupbtn">Sign Up</a>
+                  <a href="#" id="signinbtn">Sign In</a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </nav>
+
+    <!-- sign up modal -->
+    <div class="modal" id="smodal">
+      <div class="modal-background" id="modalbg"></div>
+      <div class="modal-content has-background-white p-4">
+        <p class="title has-text-centered">Sign Up Form!</p>
+        <!-- email -->
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" type="email" placeholder="Email input" />
+            <span class="icon is-small is-left">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <span class="icon is-small is-right">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- password -->
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="control">
+            <input type="password" class="input" />
+          </div>
+        </div>
+
+        <p class="has-text-centered">
+          <!-- submit and reset buttons -->
+          <input type="submit" value="Submit" class="button in-primary" />
+
+          <input type="reset" value="Reset" class="button is-success" />
+        </p>
+      </div>
+    </div>
+
+    <!-- sign in modal -->
+    <div class="modal" id="smodal2">
+      <div class="modal-background" id="modalbg2"></div>
+      <div class="modal-content has-background-white p-4">
+        <p class="title has-text-centered">Sign In Form!</p>
+        <!-- email -->
+        <div class="field">
+          <label class="label">Email</label>
+          <div class="control has-icons-left has-icons-right">
+            <input class="input" type="email" placeholder="Email input" />
+            <span class="icon is-small is-left">
+              <i class="fas fa-envelope"></i>
+            </span>
+            <span class="icon is-small is-right">
+              <i class="fas fa-exclamation-triangle"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- password -->
+        <div class="field">
+          <label class="label">Password</label>
+          <div class="control">
+            <input type="password" class="input" />
+          </div>
+        </div>
+
+        <p class="has-text-centered">
+          <!-- submit and reset buttons -->
+          <input type="submit" value="Submit" class="button in-primary" />
+
+          <input type="reset" value="Reset" class="button is-success" />
+        </p>
+      </div>
+    </div>
 
     <header class="hero is-medium has-background-grey-dark">
       <div class="hero-body">
