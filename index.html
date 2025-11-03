@@ -214,7 +214,11 @@
       });
     </script>
 
-    <!-- Firebase -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <!-- Firebase Configuration and Initialization -->
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyD2Gbgw2_-1qiYbRiZB4jwaEztLfIPC5aU",
@@ -225,9 +229,12 @@
         appId: "1:954935917465:web:7024e1ce6cce39f822f108",
         measurementId: "G-2ERS9FXKMM",
       };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
     </script>
 
-    <!-- link to javascript file -->
+    <!-- Your app logic -->
     <script src="app.js"></script>
   </body>
 </html>
