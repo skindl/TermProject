@@ -63,35 +63,44 @@
     <div class="modal" id="smodal">
       <div class="modal-background" id="modalbg"></div>
       <div class="modal-content has-background-white p-4">
-        <p class="title has-text-centered">Sign Up Form!</p>
-        <!-- email -->
-        <div class="field">
-          <label class="label">Email</label>
-          <div class="control has-icons-left has-icons-right">
-            <input class="input" type="email" placeholder="Email input" />
-            <span class="icon is-small is-left">
-              <i class="fas fa-envelope"></i>
-            </span>
-            <span class="icon is-small is-right">
-              <i class="fas fa-exclamation-triangle"></i>
-            </span>
-          </div>
-        </div>
-
-        <!-- password -->
-        <div class="field">
-          <label class="label">Password</label>
-          <div class="control">
-            <input type="password" class="input" />
-          </div>
-        </div>
-
-        <p class="has-text-centered">
-          <!-- submit and reset buttons -->
-          <input type="submit" value="Submit" class="button in-primary" />
-
-          <input type="reset" value="Reset" class="button is-success" />
+        <p class="is-size-3 has-text-weight-semibold has-text-centered">
+          Sign Up Form!
         </p>
+        <form id="sign_up_form">
+          <!-- email -->
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                class="input"
+                id="sign_email"
+                type="email"
+                placeholder="Email input"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+              <span class="icon is-small is-right">
+                <i class="fas fa-exclamation-triangle"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- password -->
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input type="password" id="sign_pass" class="input" />
+            </div>
+          </div>
+
+          <p class="has-text-centered">
+            <!-- submit and reset buttons -->
+            <input type="submit" value="Submit" class="button in-primary" />
+
+            <input type="reset" value="Reset" class="button is-success" />
+          </p>
+        </form>
       </div>
     </div>
 
@@ -99,38 +108,48 @@
     <div class="modal" id="smodal2">
       <div class="modal-background" id="modalbg2"></div>
       <div class="modal-content has-background-white p-4">
-        <p class="title has-text-centered">Sign In Form!</p>
-        <!-- email -->
-        <div class="field">
-          <label class="label">Email</label>
-          <div class="control has-icons-left has-icons-right">
-            <input class="input" type="email" placeholder="Email input" />
-            <span class="icon is-small is-left">
-              <i class="fas fa-envelope"></i>
-            </span>
-            <span class="icon is-small is-right">
-              <i class="fas fa-exclamation-triangle"></i>
-            </span>
-          </div>
-        </div>
-
-        <!-- password -->
-        <div class="field">
-          <label class="label">Password</label>
-          <div class="control">
-            <input type="password" class="input" />
-          </div>
-        </div>
-
-        <p class="has-text-centered">
-          <!-- submit and reset buttons -->
-          <input type="submit" value="Submit" class="button in-primary" />
-
-          <input type="reset" value="Reset" class="button is-success" />
+        <p class="is-size-3 has-text-weight-semibold has-text-centered">
+          Sign In Form!
         </p>
+        <form id="sign_in_form">
+          <!-- email -->
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control has-icons-left has-icons-right">
+              <input
+                class="input"
+                id="sign_in_email"
+                type="email"
+                placeholder="Email input"
+              />
+              <span class="icon is-small is-left">
+                <i class="fas fa-envelope"></i>
+              </span>
+              <span class="icon is-small is-right">
+                <i class="fas fa-exclamation-triangle"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- password -->
+          <div class="field">
+            <label class="label">Password</label>
+            <div class="control">
+              <input type="password" id="sign_in_pass" class="input" />
+            </div>
+          </div>
+
+          <p class="has-text-centered">
+            <!-- submit and reset buttons -->
+            <input type="submit" value="Submit" class="button in-primary" />
+
+            <input type="reset" value="Reset" class="button is-success" />
+          </p>
+        </form>
       </div>
     </div>
 
+    <!-- header -->
     <header class="hero is-medium has-background-grey-dark">
       <div class="hero-body">
         <div class="container has-text-centered">
