@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "is-424-group-project"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }
