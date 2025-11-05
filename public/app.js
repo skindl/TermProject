@@ -1,64 +1,47 @@
 let signupbtn = document.querySelector("#signupbtn");
 let signinbtn = document.querySelector("#signinbtn");
+let signoutbtn = document.querySelector("#signoutbtn");
 
+//---------------------------------- SIGN UP ----------------------------------//
 signupbtn.addEventListener("click", () => {
-  // show the modal by adding the is-active class to the modal div
-  // reference to the sign up model
-  let smodal = document.querySelector("#smodal");
-
-  // add the is-active to the model (function: add, class being added: is-active)
-  smodal.classList.add("is-active");
+  document.querySelector("#smodal").classList.add("is-active");
 });
 
-// SIGN IN BTN
+//---------------------------------- SIGN IN ----------------------------------//
 signinbtn.addEventListener("click", () => {
-  // show the modal by adding the is-active class to the modal div
-  // reference to the sign up model
-  let smodal2 = document.querySelector("#smodal2");
-
-  // add the is-active to the model (function: add, class being added: is-active)
-  smodal2.classList.add("is-active");
+  document.querySelector("#smodal2").classList.add("is-active");
 });
 
-// hide the modal (sign up)
+//---------------------------- HIDE MODALS ------------------------------------//
 document.querySelector("#modalbg").addEventListener("click", () => {
-  // remove the is-active class from the modal
   document.querySelector("#smodal").classList.remove("is-active");
 });
-
-// hide the modal (sign in)
 document.querySelector("#modalbg2").addEventListener("click", () => {
-  // remove the is-active class from the modal
   document.querySelector("#smodal2").classList.remove("is-active");
 });
 
-//-----------------------------SIGN UP FORM--------------------------------------
+//--------------------------- SIGN UP FORM SUBMIT -----------------------------//
 document.querySelector("#sign_up_form").addEventListener("submit", (e) => {
-  //prevent auto refresh
   e.preventDefault();
 
-  //capture the user email and password
   let user_email = document.querySelector("#sign_email").value;
   let user_pass = document.querySelector("#sign_pass").value;
 
-  //finish user authentication
-  auth.createUserWithEmailAndPassword(user_email, user_pass).then(() => {
-    //hide the modal
-    document.querySelector("#smodal").classList.remove("is-active");
-
-    //clear the form
-    document.querySelector("#sign_up_form").reset();
-
-    let new_user = {
-      email: user_email,
-      password: user_pass,
-    };
-    alert("Welcome! We are glad you joined us!");
-  });
+  auth
+    .createUserWithEmailAndPassword(user_email, user_pass)
+    .then(() => {
+      // Close modal
+      document.querySelector("#smodal").classList.remove("is-active");
+      // Reset form
+      document.querySelector("#sign_up_form").reset();
+      alert("Welcome! We are glad you joined us!");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
 });
 
-//---------------------------------SIGN IN------------------------------------------
-
+//--------------------------- SIGN IN FORM SUBMIT -----------------------------//
 document.querySelector("#sign_in_form").addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -67,12 +50,35 @@ document.querySelector("#sign_in_form").addEventListener("submit", (e) => {
 
   auth
     .signInWithEmailAndPassword(user_email, user_pass)
-    .then((user) => {
+    .then(() => {
       document.querySelector("#smodal2").classList.remove("is-active");
       document.querySelector("#sign_in_form").reset();
       alert("Welcome Back!");
     })
-    .catch((e) => {
-      alert("incorrect login!");
+    .catch(() => {
+      alert("Incorrect login!");
     });
+});
+
+//----------------------------- SIGN OUT BUTTON -------------------------------//
+signoutbtn.addEventListener("click", () => {
+  auth.signOut().then(() => {
+    alert("You've securely logged out, see you next time!");
+  });
+});
+
+//------------------------ AUTH STATE LISTENER -------------------------------//
+// This keeps the navbar buttons in sync with the user's login state
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // User is signed in
+    signinbtn.classList.add("is-hidden");
+    signupbtn.classList.add("is-hidden");
+    signoutbtn.classList.remove("is-hidden");
+  } else {
+    // User is signed out
+    signinbtn.classList.remove("is-hidden");
+    signupbtn.classList.remove("is-hidden");
+    signoutbtn.classList.add("is-hidden");
+  }
 });
