@@ -6,8 +6,6 @@ User Stories:
 “I think there should be a portal like other student orgs to eventually have any needed private information for active members like being able to sign up for specific events or being able to access a full photo repository.”
 “I want to be able to favorite upcoming events I’m interested in attending and having a personal account will let me keep track of everything.”
 
-SPRINT BACKLOG
-
 BURNDOWN CHART SCREENSHOTS
 
 DAILY SCRUM EVIDENCE
