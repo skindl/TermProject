@@ -82,7 +82,7 @@ Any blockers? There was one conflict when I merged my branch in the about.html b
 
 SPRINT REVIEW REFLECTIONS
 What did you learn in this sprint?
-We learned that it is important to communicate with each other when collaborating on a project through GitHub. When connecting
+We learned that it is important to communicate with each other when collaborating on a project through GitHub. When connecting our individual contributions, we realized that clear communication helps prevent merge conflicts and ensures everyone understands the current state of the project. We also learned how to use branches and pull requests more effectively to review changes before merging them into the main branch.
 
 What went well and why?
 We were able to collaborate easily because of GitHub and look over each other's work. We were able to create our website to the satisfaction of our client by communicating and providing updates.
