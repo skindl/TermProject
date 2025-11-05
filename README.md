@@ -6,6 +6,15 @@ User Stories:
 “I think there should be a portal like other student orgs to eventually have any needed private information for active members like being able to sign up for specific events or being able to access a full photo repository.”
 “I want to be able to favorite upcoming events I’m interested in attending and having a personal account will let me keep track of everything.”
 
+TEAM SPRINT GOALS:
+
+Streamline site UI design across all site web pages
+Leverage Agile framework with Scrum to create user authentication with sign up, sign in, and sign out functionality
+Enable signing in with email and password
+Sign in with existing credentials
+Sign out securely
+Display a welcome message or basic user info when log-in is successful
+
 BURNDOWN CHART SCREENSHOTS
 
 DAILY SCRUM EVIDENCE
