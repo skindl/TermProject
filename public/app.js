@@ -1,6 +1,7 @@
 let signupbtn = document.querySelector("#signupbtn");
 let signinbtn = document.querySelector("#signinbtn");
 let signoutbtn = document.querySelector("#signoutbtn");
+let userEmailDisplay = document.querySelector("#userEmail");
 
 //---------------------------------- SIGN UP ----------------------------------//
 signupbtn.addEventListener("click", () => {
@@ -30,9 +31,7 @@ document.querySelector("#sign_up_form").addEventListener("submit", (e) => {
   auth
     .createUserWithEmailAndPassword(user_email, user_pass)
     .then(() => {
-      // Close modal
       document.querySelector("#smodal").classList.remove("is-active");
-      // Reset form
       document.querySelector("#sign_up_form").reset();
       alert("Welcome! We are glad you joined us!");
     })
@@ -68,17 +67,24 @@ signoutbtn.addEventListener("click", () => {
 });
 
 //------------------------ AUTH STATE LISTENER -------------------------------//
-// This keeps the navbar buttons in sync with the user's login state
 auth.onAuthStateChanged((user) => {
   if (user) {
     // User is signed in
     signinbtn.classList.add("is-hidden");
     signupbtn.classList.add("is-hidden");
     signoutbtn.classList.remove("is-hidden");
+
+    // Show user email
+    userEmailDisplay.textContent = user.email;
+    userEmailDisplay.classList.remove("is-hidden");
   } else {
     // User is signed out
     signinbtn.classList.remove("is-hidden");
     signupbtn.classList.remove("is-hidden");
     signoutbtn.classList.add("is-hidden");
+
+    // Hide user email
+    userEmailDisplay.textContent = "";
+    userEmailDisplay.classList.add("is-hidden");
   }
 });
