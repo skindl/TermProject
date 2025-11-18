@@ -88,3 +88,55 @@ auth.onAuthStateChanged((user) => {
     userEmailDisplay.classList.add("is-hidden");
   }
 });
+
+// ---------------- CONTACT FORM SUBMISSION ---------------- //
+const contactForm = document.querySelector("#contact_form");
+
+if (contactForm) {
+  contactForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    let name = document.querySelector("#contact_name").value;
+    let email = document.querySelector("#contact_email").value;
+    let message = document.querySelector("#contact_message").value;
+
+    db.collection("contactMessages")
+      .add({
+        name: name,
+        email: email,
+        message: message,
+        submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        alert("Thanks! Your message has been sent.");
+        contactForm.reset();
+      })
+      .catch((error) => {
+        alert("Error sending message: " + error);
+      });
+  });
+}
+
+// ---------------- NEWSLETTER SIGNUP ---------------- //
+const newsletterForm = document.querySelector("#newsletter_form");
+
+if (newsletterForm) {
+  newsletterForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    let email = document.querySelector("#newsletter_email").value;
+
+    db.collection("newsletterSubscribers")
+      .add({
+        email: email,
+        subscribedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      .then(() => {
+        alert("Thanks for signing up for our newsletter!");
+        newsletterForm.reset();
+      })
+      .catch((error) => {
+        alert("Error signing up: " + error);
+      });
+  });
+}
