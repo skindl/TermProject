@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery | Kasper Dance Crew</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/8a80b728dc.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body class="has-background-black has-text-white">
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item has-text-weight-bold" href="index.html">
+            <img
+              src="images/logo.jpg"
+              alt="Kasper Dance Crew logo"
+              style="max-height: 2rem; margin-right: 8px"
+            />
+            Kasper Dance Crew
+          </a>
+
+          <a
+            role="button"
+            class="navbar-burger has-text-white"
+            aria-label="menu"
+            aria-expanded="false"
+            data-target="mainNav"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="mainNav" class="navbar-menu has-background-black">
+          <div class="navbar-start">
+            <a class="navbar-item" href="index.html">Home</a>
+            <a class="navbar-item" href="about.html">About Us</a>
+            <a class="navbar-item" href="gallery.html">Gallery</a>
+            <a class="navbar-item" href="contact.html">Contact Us</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero is-small has-background-grey-dark">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title is-3 has-text-white">Performance Gallery</h1>
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container">
+        <div class="columns is-multiline is-centered">
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
+            <figure class="image is-4by3">
+              <img src="images/img1.png" alt="image 1" />
+            </figure>
+          </div>
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
+            <figure class="image is-4by3">
+              <img src="images/img2.png" alt="image 2" />
+            </figure>
+          </div>
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
+            <figure class="image is-4by3">
+              <img src="images/img3.png" alt="image 3" />
+            </figure>
+          </div>
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
+            <figure class="image is-4by3">
+              <img src="images/img4.png" alt="image 4" />
+            </figure>
+          </div>
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
+            <figure class="image is-4by3">
+              <img src="images/img5.png" alt="image 5" />
+            </figure>
+          </div>
+          <div
+            class="column is-one-third-desktop is-half-tablet is-full-mobile"
+          >
+            <figure class="image is-4by3">
+              <img src="images/img6.png" alt="image 6" />
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer has-background-dark has-text-white">
+      <div class="content has-text-centered">
+        <a href="http://www.facebook.com" class="mr-3">
+          <i class="fa-brands fa-facebook-f fa-2x has-text-white"></i>
+        </a>
+        <a href="http://www.x.com">
+          <i class="fa-brands fa-twitter fa-2x has-text-white"></i>
+        </a>
+      </div>
+      <div class="content has-text-centered">
+        <p><i>&copy; 2025 Kasper Dance Crew</i></p>
+      </div>
+    </footer>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const burger = document.querySelector(".navbar-burger");
+        const menu = document.getElementById("mainNav");
+        if (burger && menu) {
+          burger.addEventListener("click", () => {
+            burger.classList.toggle("is-active");
+            menu.classList.toggle("is-active");
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
