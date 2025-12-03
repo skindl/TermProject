@@ -81,73 +81,138 @@
     <header class="hero is-small has-background-grey-dark">
       <div class="hero-body">
         <div class="container has-text-centered">
-          <h1 class="title is-3 has-text-white">Performance Gallery</h1>
+          <h1 class="title is-3 has-text-white">Gallery</h1>
         </div>
       </div>
     </header>
 
-    <section class="section">
+    <main class="section">
       <div class="container">
-        <div class="columns is-multiline is-centered">
-          <div
-            class="column is-one-third-desktop is-half-tablet is-full-mobile"
-          >
-            <figure class="image is-4by3">
-              <img src="images/img7.JPG" alt="image 1" />
-            </figure>
-          </div>
-          <div
-            class="column is-one-third-desktop is-half-tablet is-full-mobile"
-          >
-            <figure class="image is-4by3">
-              <img src="images/img8.jpeg" alt="image 2" />
-            </figure>
-          </div>
-          <div
-            class="column is-one-third-desktop is-half-tablet is-full-mobile"
-          >
-            <figure class="image is-4by3">
-              <img src="images/img9.JPG" alt="image 3" />
-            </figure>
-          </div>
-          <div
-            class="column is-one-third-desktop is-half-tablet is-full-mobile"
-          >
-            <figure class="image is-4by3">
-              <img src="images/img11.jpg" alt="image 4" />
-            </figure>
-          </div>
-          <div
-            class="column is-one-third-desktop is-half-tablet is-full-mobile"
-          >
-            <figure class="image is-4by3">
-              <img src="images/img10.JPG" alt="image 5" />
-            </figure>
-          </div>
-          <div
-            class="column is-one-third-desktop is-half-tablet is-full-mobile"
-          >
-            <figure class="image is-4by3">
-              <img src="images/img6.png" alt="image 6" />
-            </figure>
+        <!-- INTRO -->
+        <div class="box has-background-black has-text-white mb-5">
+          <h2 class="title is-2 has-text-white has-text-centered">
+            Performances & Moments
+          </h2>
+          <p class="subtitle is-5 has-text-grey-light has-text-centered">
+            A look at some of Kasper Dance Crew&apos;s favorite shows and
+            rehearsals.
+          </p>
+        </div>
+
+        <!-- ⭐ YOUR ORIGINAL STATIC GALLERY (KEEP THIS) ⭐ -->
+        <div class="box has-background-black has-text-white mb-5">
+          <h2 class="title is-3 has-text-white has-text-centered">
+            Gallery Highlights
+          </h2>
+
+          <!-- YOUR EXISTING STATIC GALLERY HERE -->
+          <!-- e.g. your current images grid, cards, etc. -->
+          <!-- Leave all your old gallery markup here, we don't touch it. -->
+        </div>
+
+        <!-- 🔄 DYNAMIC GALLERY FROM FIRESTORE -->
+        <div class="box has-background-black has-text-white">
+          <h2 class="title is-3 has-text-white has-text-centered">
+            More from Our Gallery
+          </h2>
+          <div id="gallery_public_list" class="columns is-multiline">
+            <!-- Dynamic items from Firestore will be inserted here by app.js -->
           </div>
         </div>
+
+        <!-- 🛠 ADMIN PANEL: ADD / DELETE GALLERY ITEMS -->
+        <section id="adminPanelGallery" class="section is-hidden">
+          <div class="container">
+            <h2 class="title is-4 has-text-white has-text-centered">
+              Admin: Manage Gallery
+            </h2>
+            <div class="columns">
+              <div class="column">
+                <div class="box has-background-black has-text-white mb-4">
+                  <h3 class="title is-5 has-text-white">Add Gallery Item</h3>
+                  <form id="add_gallery_item_form">
+                    <div class="field">
+                      <label class="label has-text-white">Type</label>
+                      <div class="control">
+                        <div class="select is-dark">
+                          <select id="gallery_type">
+                            <option value="image">Image</option>
+                            <option value="video">Video (embed URL)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="field">
+                      <label class="label has-text-white">Title</label>
+                      <input
+                        class="input is-dark"
+                        id="gallery_title"
+                        required
+                      />
+                    </div>
+
+                    <div class="field">
+                      <label class="label has-text-white"
+                        >Image/Video URL</label
+                      >
+                      <input class="input is-dark" id="gallery_url" required />
+                    </div>
+
+                    <div class="field">
+                      <label class="label has-text-white"
+                        >Thumbnail URL (optional)</label
+                      >
+                      <input class="input is-dark" id="gallery_thumb" />
+                    </div>
+
+                    <div class="field">
+                      <label class="label has-text-white">Description</label>
+                      <textarea
+                        class="textarea is-dark"
+                        id="gallery_desc"
+                        rows="3"
+                      ></textarea>
+                    </div>
+
+                    <button class="button is-white" type="submit">
+                      Add Gallery Item
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="column">
+                <div class="box has-background-black has-text-white">
+                  <h3 class="title is-5 has-text-white">
+                    Existing Gallery Items
+                  </h3>
+                  <div id="gallery_items">
+                    <!-- Admin list + delete buttons rendered by app.js -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </main>
 
     <footer class="footer has-background-dark has-text-white">
       <div class="content has-text-centered">
-        <a href="https://www.instagram.com/kasperdancecrew/?hl=en" class="mr-3">
-          <i class="fa-brands fa-instagram fa-2x has-text-white"></i>
+        <a href="http://www.facebook.com" class="mr-3">
+          <i class="fa-brands fa-facebook-f fa-2x has-text-white"></i>
         </a>
-        <a href="https://www.youtube.com/@KASPERDanceCrew">
-          <i class="fa-brands fa-youtube fa-2x has-text-white"></i>
+        <a href="http://www.x.com">
+          <i class="fa-brands fa-twitter fa-2x has-text-white"></i>
         </a>
       </div>
       <div class="content has-text-centered">
         <p><i>&copy; 2025 Kasper Dance Crew</i></p>
       </div>
     </footer>
+
+    <!-- Burger script -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const burger = document.querySelector(".navbar-burger");
@@ -160,7 +225,8 @@
         }
       });
     </script>
-    <!-- sign up modal -->
+
+    <!-- SIGN UP MODAL -->
     <div class="modal" id="smodal">
       <div class="modal-background" id="modalbg"></div>
       <div class="modal-content has-background-white p-4">
@@ -168,7 +234,6 @@
           Sign Up Form!
         </p>
         <form id="sign_up_form">
-          <!-- email -->
           <div class="field">
             <label class="label">Email</label>
             <div class="control has-icons-left has-icons-right">
@@ -181,13 +246,9 @@
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
               </span>
-              <span class="icon is-small is-right">
-                <i class="fas fa-exclamation-triangle"></i>
-              </span>
             </div>
           </div>
 
-          <!-- password -->
           <div class="field">
             <label class="label">Password</label>
             <div class="control">
@@ -196,16 +257,14 @@
           </div>
 
           <p class="has-text-centered">
-            <!-- submit and reset buttons -->
             <input type="submit" value="Submit" class="button in-primary" />
-
             <input type="reset" value="Reset" class="button is-success" />
           </p>
         </form>
       </div>
     </div>
 
-    <!-- sign in modal -->
+    <!-- SIGN IN MODAL -->
     <div class="modal" id="smodal2">
       <div class="modal-background" id="modalbg2"></div>
       <div class="modal-content has-background-white p-4">
@@ -213,7 +272,6 @@
           Sign In Form!
         </p>
         <form id="sign_in_form">
-          <!-- email -->
           <div class="field">
             <label class="label">Email</label>
             <div class="control has-icons-left has-icons-right">
@@ -226,13 +284,9 @@
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
               </span>
-              <span class="icon is-small is-right">
-                <i class="fas fa-exclamation-triangle"></i>
-              </span>
             </div>
           </div>
 
-          <!-- password -->
           <div class="field">
             <label class="label">Password</label>
             <div class="control">
@@ -241,31 +295,17 @@
           </div>
 
           <p class="has-text-centered">
-            <!-- submit and reset buttons -->
             <input type="submit" value="Submit" class="button in-primary" />
-
             <input type="reset" value="Reset" class="button is-success" />
           </p>
         </form>
       </div>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const burger = document.querySelector(".navbar-burger");
-        const menu = document.getElementById("mainNav");
-        if (burger && menu) {
-          burger.addEventListener("click", () => {
-            burger.classList.toggle("is-active");
-            menu.classList.toggle("is-active");
-          });
-        }
-      });
-    </script>
-
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <!-- Firebase Configuration and Initialization -->
     <script>
@@ -273,7 +313,7 @@
         apiKey: "AIzaSyD2Gbgw2_-1qiYbRiZB4jwaEztLfIPC5aU",
         authDomain: "is-424-group-project.firebaseapp.com",
         projectId: "is-424-group-project",
-        storageBucket: "is-424-group-project.firebasestorage.app",
+        storageBucket: "is-424-group-project.appspot.com",
         messagingSenderId: "954935917465",
         appId: "1:954935917465:web:7024e1ce6cce39f822f108",
         measurementId: "G-2ERS9FXKMM",
@@ -281,6 +321,7 @@
 
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
+      const db = firebase.firestore();
     </script>
 
     <!-- Your app logic -->
