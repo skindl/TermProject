@@ -7,7 +7,7 @@ let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
 // --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
-const adminEmails = ["admin@gmail.com"];
+const adminEmails = ["admin1@gmail.com", "admin2@gmail.com"];
 
 let isCurrentUserAdmin = false;
 
