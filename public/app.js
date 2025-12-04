@@ -1,39 +1,45 @@
+// ---------------- BASIC BUTTON / NAV ELEMENTS ---------------- //
 let signupbtn = document.querySelector("#signupbtn");
 let signinbtn = document.querySelector("#signinbtn");
 let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
 // --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
-const adminEmails = ["admin@gmail.com", "kasper.dancecrew@gmail.com"];
+const adminEmails = [
+  "admin@gmail.com", // <-- REPLACE with your actual admin email
+];
 
 let isCurrentUserAdmin = false;
 
-//---------------------------------- SIGN UP ----------------------------------//
-if (signupbtn) {
+// -------------------------- MODALS -------------------------- //
+const smodal = document.querySelector("#smodal");
+const smodal2 = document.querySelector("#smodal2");
+const modalbg = document.querySelector("#modalbg");
+const modalbg2 = document.querySelector("#modalbg2");
+
+//---------------------------------- SIGN UP (OPEN MODAL) ----------------------------------//
+if (signupbtn && smodal) {
   signupbtn.addEventListener("click", () => {
-    document.querySelector("#smodal").classList.add("is-active");
+    smodal.classList.add("is-active");
   });
 }
 
-//---------------------------------- SIGN IN ----------------------------------//
-if (signinbtn) {
+//---------------------------------- SIGN IN (OPEN MODAL) ----------------------------------//
+if (signinbtn && smodal2) {
   signinbtn.addEventListener("click", () => {
-    document.querySelector("#smodal2").classList.add("is-active");
+    smodal2.classList.add("is-active");
   });
 }
 
 //---------------------------- HIDE MODALS ------------------------------------//
-const modalbg = document.querySelector("#modalbg");
-if (modalbg) {
+if (modalbg && smodal) {
   modalbg.addEventListener("click", () => {
-    document.querySelector("#smodal").classList.remove("is-active");
+    smodal.classList.remove("is-active");
   });
 }
-
-const modalbg2 = document.querySelector("#modalbg2");
-if (modalbg2) {
+if (modalbg2 && smodal2) {
   modalbg2.addEventListener("click", () => {
-    document.querySelector("#smodal2").classList.remove("is-active");
+    smodal2.classList.remove("is-active");
   });
 }
 
@@ -49,7 +55,7 @@ if (signUpForm) {
     auth
       .createUserWithEmailAndPassword(user_email, user_pass)
       .then(() => {
-        document.querySelector("#smodal").classList.remove("is-active");
+        if (smodal) smodal.classList.remove("is-active");
         signUpForm.reset();
         alert("Welcome! We are glad you joined us!");
       })
@@ -71,7 +77,7 @@ if (signInForm) {
     auth
       .signInWithEmailAndPassword(user_email, user_pass)
       .then(() => {
-        document.querySelector("#smodal2").classList.remove("is-active");
+        if (smodal2) smodal2.classList.remove("is-active");
         signInForm.reset();
         alert("Welcome Back!");
       })
@@ -90,23 +96,27 @@ if (signoutbtn) {
   });
 }
 
-//------------------------ AUTH STATE LISTENER -------------------------------//
+// ------------------------ AUTH STATE LISTENER ------------------------------- //
 const adminPanelAbout = document.querySelector("#adminPanelAbout");
 const adminPanelGallery = document.querySelector("#adminPanelGallery");
 
 auth.onAuthStateChanged((user) => {
   if (user) {
+    // Show correct auth buttons
     if (signinbtn) signinbtn.classList.add("is-hidden");
     if (signupbtn) signupbtn.classList.add("is-hidden");
     if (signoutbtn) signoutbtn.classList.remove("is-hidden");
 
+    // Show user email in navbar
     if (userEmailDisplay) {
       userEmailDisplay.textContent = user.email;
       userEmailDisplay.classList.remove("is-hidden");
     }
 
+    // Check admin
     isCurrentUserAdmin = adminEmails.includes(user.email);
 
+    // Toggle admin panels
     if (adminPanelAbout) {
       if (isCurrentUserAdmin) {
         adminPanelAbout.classList.remove("is-hidden");
@@ -122,12 +132,8 @@ auth.onAuthStateChanged((user) => {
         adminPanelGallery.classList.add("is-hidden");
       }
     }
-
-    // Load data (with admin/non-admin view)
-    loadPerformances();
-    loadAuditions();
-    loadGalleryItems();
   } else {
+    // User is signed out
     if (signinbtn) signinbtn.classList.remove("is-hidden");
     if (signupbtn) signupbtn.classList.remove("is-hidden");
     if (signoutbtn) signoutbtn.classList.add("is-hidden");
@@ -141,12 +147,12 @@ auth.onAuthStateChanged((user) => {
 
     if (adminPanelAbout) adminPanelAbout.classList.add("is-hidden");
     if (adminPanelGallery) adminPanelGallery.classList.add("is-hidden");
-
-    // Still show public lists even if logged out
-    loadPerformances();
-    loadAuditions();
-    loadGalleryItems();
   }
+
+  // Load data (public + admin if present) on any auth state change
+  loadPerformances();
+  loadAuditions();
+  loadGalleryItems();
 });
 
 // ---------------- CONTACT FORM SUBMISSION ---------------- //
@@ -203,7 +209,7 @@ if (newsletterForm) {
 
 /* ===================== ADMIN: PERFORMANCES & AUDITIONS ===================== */
 
-// Add performance
+// Add performance (About page admin form)
 const addPerfForm = document.querySelector("#add_performance_form");
 if (addPerfForm) {
   addPerfForm.addEventListener("submit", (e) => {
@@ -231,7 +237,7 @@ if (addPerfForm) {
   });
 }
 
-// Add audition
+// Add audition (About page admin form)
 const addAudForm = document.querySelector("#add_audition_form");
 if (addAudForm) {
   addAudForm.addEventListener("submit", (e) => {
@@ -259,6 +265,7 @@ if (addAudForm) {
   });
 }
 
+// Load performances (public + admin)
 function loadPerformances() {
   const publicContainer = document.querySelector("#public_performances");
   const adminContainer = document.querySelector("#perf_items");
@@ -268,12 +275,8 @@ function loadPerformances() {
   db.collection("performances")
     .orderBy("date")
     .onSnapshot((snapshot) => {
-      if (publicContainer) {
-        publicContainer.innerHTML = "";
-      }
-      if (adminContainer) {
-        adminContainer.innerHTML = "";
-      }
+      if (publicContainer) publicContainer.innerHTML = "";
+      if (adminContainer) adminContainer.innerHTML = "";
 
       if (snapshot.empty) {
         if (publicContainer) {
@@ -285,24 +288,32 @@ function loadPerformances() {
 
       snapshot.forEach((doc) => {
         const data = doc.data();
+        const title = data.title || "Untitled Performance";
+        const date = data.date || "";
+        const time = data.time || "";
+        const location = data.location || "";
+        const description = data.description || "";
 
-        // Public view
+        // ----- PUBLIC VIEW -----
         if (publicContainer) {
           const p = document.createElement("p");
-          p.innerHTML = `<strong>${data.title}</strong> — ${data.date} ${data.time} @ ${data.location}`;
+          p.innerHTML = `
+            <strong>${title}</strong><br>
+            ${date} ${time} @ ${location}<br>
+            <span>${description}</span>
+          `;
           publicContainer.appendChild(p);
         }
 
-        // Admin view
+        // ----- ADMIN VIEW -----
         if (adminContainer) {
           const div = document.createElement("div");
           div.classList.add("mb-3");
 
           let html = `
-            <p><strong>${data.title}</strong> — ${data.date} ${data.time} @ ${
-            data.location
-          }</p>
-            <p>${data.description || ""}</p>
+            <p><strong>${title}</strong></p>
+            <p>${date} ${time} @ ${location}</p>
+            <p>${description}</p>
           `;
 
           if (isCurrentUserAdmin) {
@@ -315,6 +326,7 @@ function loadPerformances() {
         }
       });
 
+      // delete buttons for admin
       if (adminContainer && isCurrentUserAdmin) {
         const deleteButtons =
           adminContainer.querySelectorAll("button[data-id]");
@@ -332,6 +344,7 @@ function loadPerformances() {
     });
 }
 
+// Load auditions (public + admin)
 function loadAuditions() {
   const publicContainer = document.querySelector("#public_auditions");
   const adminContainer = document.querySelector("#aud_items");
@@ -341,12 +354,8 @@ function loadAuditions() {
   db.collection("auditions")
     .orderBy("date")
     .onSnapshot((snapshot) => {
-      if (publicContainer) {
-        publicContainer.innerHTML = "";
-      }
-      if (adminContainer) {
-        adminContainer.innerHTML = "";
-      }
+      if (publicContainer) publicContainer.innerHTML = "";
+      if (adminContainer) adminContainer.innerHTML = "";
 
       if (snapshot.empty) {
         if (publicContainer) {
@@ -357,24 +366,32 @@ function loadAuditions() {
 
       snapshot.forEach((doc) => {
         const data = doc.data();
+        const season = data.season || "Upcoming Audition";
+        const date = data.date || "";
+        const time = data.time || "";
+        const location = data.location || "";
+        const requirements = data.requirements || "";
 
-        // Public
+        // ----- PUBLIC VIEW -----
         if (publicContainer) {
           const p = document.createElement("p");
-          p.innerHTML = `<strong>${data.season}</strong> — ${data.date} ${data.time} @ ${data.location}`;
+          p.innerHTML = `
+            <strong>${season}</strong><br>
+            ${date} ${time} @ ${location}<br>
+            <span>${requirements}</span>
+          `;
           publicContainer.appendChild(p);
         }
 
-        // Admin
+        // ----- ADMIN VIEW -----
         if (adminContainer) {
           const div = document.createElement("div");
           div.classList.add("mb-3");
 
           let html = `
-            <p><strong>${data.season}</strong> — ${data.date} ${data.time} @ ${
-            data.location
-          }</p>
-            <p>${data.requirements || ""}</p>
+            <p><strong>${season}</strong></p>
+            <p>${date} ${time} @ ${location}</p>
+            <p>${requirements}</p>
           `;
 
           if (isCurrentUserAdmin) {
@@ -406,6 +423,7 @@ function loadAuditions() {
 
 /* ===================== ADMIN: GALLERY ITEMS ===================== */
 
+// Add gallery item (Gallery page admin form)
 const addGalleryForm = document.querySelector("#add_gallery_item_form");
 if (addGalleryForm) {
   addGalleryForm.addEventListener("submit", (e) => {
@@ -433,6 +451,7 @@ if (addGalleryForm) {
   });
 }
 
+// Load gallery items (public + admin)
 function loadGalleryItems() {
   const publicContainer = document.querySelector("#gallery_public_list");
   const adminContainer = document.querySelector("#gallery_items");
@@ -455,22 +474,29 @@ function loadGalleryItems() {
       snapshot.forEach((doc) => {
         const data = doc.data();
 
-        // Public view: simple card
+        const type = data.type || "image";
+        const title = data.title || "Gallery Item";
+        const url = data.url || "";
+        const thumb = data.thumbnailUrl || data.url || "";
+        const desc = data.description || "";
+
+        // Public view
         if (publicContainer) {
           const col = document.createElement("div");
           col.classList.add("column", "is-one-third");
 
           let mediaHtml = "";
 
-          if (data.type === "video") {
-            mediaHtml = `<div class="video">
-              <iframe src="${data.url}" frameborder="0" allowfullscreen style="width:100%;height:200px;"></iframe>
-            </div>`;
+          if (type === "video") {
+            mediaHtml = `
+              <div class="video">
+                <iframe src="${url}" frameborder="0" allowfullscreen style="width:100%;height:200px;"></iframe>
+              </div>`;
           } else {
-            // image
-            mediaHtml = `<figure class="image">
-              <img src="${data.thumbnailUrl || data.url}" alt="${data.title}">
-            </figure>`;
+            mediaHtml = `
+              <figure class="image">
+                <img src="${thumb}" alt="${title}">
+              </figure>`;
           }
 
           col.innerHTML = `
@@ -479,8 +505,8 @@ function loadGalleryItems() {
                 ${mediaHtml}
               </div>
               <div class="card-content">
-                <p class="title is-5 has-text-white">${data.title}</p>
-                <p class="has-text-grey-light">${data.description || ""}</p>
+                <p class="title is-5 has-text-white">${title}</p>
+                <p class="has-text-grey-light">${desc}</p>
               </div>
             </div>
           `;
@@ -488,15 +514,15 @@ function loadGalleryItems() {
           publicContainer.appendChild(col);
         }
 
-        // Admin view: list with delete
+        // Admin view
         if (adminContainer) {
           const div = document.createElement("div");
           div.classList.add("mb-3");
 
           let html = `
-            <p><strong>${data.title}</strong> (${data.type})</p>
-            <p>${data.url}</p>
-            <p>${data.description || ""}</p>
+            <p><strong>${title}</strong> (${type})</p>
+            <p>${url}</p>
+            <p>${desc}</p>
           `;
 
           if (isCurrentUserAdmin) {
