@@ -30,6 +30,15 @@ document.querySelector("#sign_up_form").addEventListener("submit", (e) => {
 
   auth
     .createUserWithEmailAndPassword(user_email, user_pass)
+    .then((userCredential) => {
+      const uid = userCredential.user.uid;
+
+      // Create Firestore user document
+      return db.collection("users").doc(uid).set({
+        email: user_email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+    })
     .then(() => {
       document.querySelector("#smodal").classList.remove("is-active");
       document.querySelector("#sign_up_form").reset();
