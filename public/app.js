@@ -86,7 +86,10 @@ if (signInForm) {
         console.log("Sign-in successful for:", user_email);
         if (smodal2) smodal2.classList.remove("is-active");
         signInForm.reset();
-        alert("Welcome Back!");
+        // added/updated this section
+        isCurrentUserAdmin = adminEmails.includes(userEmail);
+        alert(`Welcome Back!      Admin? ${isCurrentUserAdmin}`);
+        // --
       })
       .catch((error) => {
         console.error("Sign-in error:", error);
@@ -127,7 +130,7 @@ auth.onAuthStateChanged((user) => {
     console.log("Is current user admin?", isCurrentUserAdmin);
 
     // DEBUG: show what Firebase thinks
-    alert(`Signed in as: ${userEmail}\nAdmin? ${isCurrentUserAdmin}`);
+    // alert(`Signed in as: ${userEmail}\nAdmin? ${isCurrentUserAdmin}`);
 
     // Show correct auth buttons
     if (signinbtn) signinbtn.classList.add("is-hidden");
