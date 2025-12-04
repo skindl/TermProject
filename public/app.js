@@ -6,9 +6,8 @@ let signinbtn = document.querySelector("#signinbtn");
 let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
-// --------- ADMIN CONFIG (PUT YOUR EMAIL(S) HERE) --------- //
-// For now, ONLY admin2@gmail.com is admin
-const adminEmails = ["admin2@gmail.com"].map((e) => e.toLowerCase());
+// --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
+const adminEmails = ["admin@gmail.com"];
 
 let isCurrentUserAdmin = false;
 
