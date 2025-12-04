@@ -115,7 +115,67 @@
               <div class="card has-background-grey-darker has-text-white">
                 <div class="card-content">
                   <p class="title is-4 has-text-white">Performances</p>
-                  <p>Check back soon for our upcoming shows!</p>
+                  <!-- Performance Card 1 -->
+                  <div
+                    class="card has-background-black-ter has-text-white mb-3"
+                    data-event-id="chasa"
+                  >
+                    <div class="card-content">
+                      <p class="title is-5 mb-2 has-text-white">
+                        CHASA Lunar New Years
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Date: 2/7/2026
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Time: 6-10 PM
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Location: Union South (Varsity Hall)
+                      </p>
+                      <!-- BUTTON -->
+                      <button class="button is-link add-delete-btn mt-3">
+                        Add Event
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Performance Card 2 -->
+                  <div
+                    class="card has-background-black-ter has-text-white mb-3"
+                    data-event-id="finger"
+                  >
+                    <div class="card-content">
+                      <p class="title is-5 mb-2 has-text-white">
+                        Finger Heart Festival
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Date: 1/30/2026
+                      </p>
+                      <!-- BUTTON -->
+                      <button class="button is-link add-delete-btn mt-3">
+                        Add Event
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Performance Card 3 -->
+                  <div
+                    class="card has-background-black-ter has-text-white mb-3"
+                    data-event-id="wud"
+                  >
+                    <div class="card-content">
+                      <p class="title is-5 mb-2 has-text-white">
+                        WUD World Wide Event
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Date: 4/19/2026
+                      </p>
+                      <!-- BUTTON -->
+                      <button class="button is-link add-delete-btn mt-3">
+                        Add Event
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,7 +183,50 @@
               <div class="card has-background-grey-darker has-text-white">
                 <div class="card-content">
                   <p class="title is-4 has-text-white">Auditions</p>
-                  <p>Details about auditions will be posted here.</p>
+                  <!-- Audition Card 1 -->
+                  <div
+                    class="card has-background-black-ter has-text-white mb-3"
+                    data-event-id="aud1"
+                  >
+                    <div class="card-content">
+                      <p class="title is-5 mb-2 has-text-white">Audition #1</p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Date: 2/14/2026
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Time: 11AM - 1PM
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        SAC (Multipurpose Room)
+                      </p>
+                      <!-- BUTTON -->
+                      <button class="button is-link add-delete-btn mt-3">
+                        Add Event
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Audition Card 2 -->
+                  <div
+                    class="card has-background-black-ter has-text-white mb-3"
+                    data-event-id="aud2"
+                  >
+                    <div class="card-content">
+                      <p class="title is-5 mb-2 has-text-white">Audition #2</p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Date: 2/15/2026
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Time: 11AM - 1PM
+                      </p>
+                      <p class="subtitle is-6 mb-2 has-text-grey-light">
+                        Memorial Union (Festival Room)
+                      </p>
+                      <!-- BUTTON -->
+                      <button class="button is-link add-delete-btn mt-3">
+                        Add Event
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -131,6 +234,16 @@
         </div>
       </div>
     </main>
+
+    <!-- users can add/delete their events once logged in -->
+    <!-- User Events Section (hidden unless signed in) -->
+    <section id="userEventsSection" class="section is-hidden">
+      <div class="container">
+        <h2 class="title is-3 has-text-centered has-text-white">My Events</h2>
+
+        <div id="userEventCards"></div>
+      </div>
+    </section>
 
     <footer class="footer has-background-dark has-text-white">
       <div class="content has-text-centered">
