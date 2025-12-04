@@ -1,11 +1,13 @@
+// app.js - Kasper Dance Crew
+
 // ---------------- BASIC BUTTON / NAV ELEMENTS ---------------- //
 let signupbtn = document.querySelector("#signupbtn");
 let signinbtn = document.querySelector("#signinbtn");
 let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
-// --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
-// Use your REAL email(s) that you log in with
+// --------- ADMIN CONFIG (PUT YOUR EMAIL(S) HERE) --------- //
+// All emails are compared in lowercase.
 const adminEmails = ["admin@gmail.com", "admin2@gmail.com"].map((e) =>
   e.toLowerCase()
 );
@@ -136,19 +138,10 @@ auth.onAuthStateChanged((user) => {
 
     // Toggle admin panels
     if (adminPanelAbout) {
-      if (isCurrentUserAdmin) {
-        adminPanelAbout.classList.remove("is-hidden");
-      } else {
-        adminPanelAbout.classList.add("is-hidden");
-      }
+      adminPanelAbout.classList.toggle("is-hidden", !isCurrentUserAdmin);
     }
-
     if (adminPanelGallery) {
-      if (isCurrentUserAdmin) {
-        adminPanelGallery.classList.remove("is-hidden");
-      } else {
-        adminPanelGallery.classList.add("is-hidden");
-      }
+      adminPanelGallery.classList.toggle("is-hidden", !isCurrentUserAdmin);
     }
   } else {
     console.log("No user signed in");
