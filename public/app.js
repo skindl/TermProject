@@ -7,10 +7,8 @@ let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
 // --------- ADMIN CONFIG (PUT YOUR EMAIL(S) HERE) --------- //
-// All emails are compared in lowercase.
-const adminEmails = ["admin@gmail.com", "admin2@gmail.com"].map((e) =>
-  e.toLowerCase()
-);
+// For now, ONLY admin2@gmail.com is admin
+const adminEmails = ["admin2@gmail.com"].map((e) => e.toLowerCase());
 
 let isCurrentUserAdmin = false;
 
@@ -121,6 +119,13 @@ auth.onAuthStateChanged((user) => {
     const userEmail = (user.email || "").toLowerCase();
     console.log("Signed in as:", userEmail);
 
+    // check admin
+    isCurrentUserAdmin = adminEmails.includes(userEmail);
+    console.log("Is current user admin?", isCurrentUserAdmin);
+
+    // DEBUG: show what Firebase thinks
+    alert(`Signed in as: ${userEmail}\nAdmin? ${isCurrentUserAdmin}`);
+
     // Show correct auth buttons
     if (signinbtn) signinbtn.classList.add("is-hidden");
     if (signupbtn) signupbtn.classList.add("is-hidden");
@@ -131,10 +136,6 @@ auth.onAuthStateChanged((user) => {
       userEmailDisplay.textContent = user.email;
       userEmailDisplay.classList.remove("is-hidden");
     }
-
-    // Check admin
-    isCurrentUserAdmin = adminEmails.includes(userEmail);
-    console.log("Is current user admin?", isCurrentUserAdmin);
 
     // Toggle admin panels
     if (adminPanelAbout) {
@@ -162,7 +163,7 @@ auth.onAuthStateChanged((user) => {
     if (adminPanelGallery) adminPanelGallery.classList.add("is-hidden");
   }
 
-  // Load data (public + admin if present) on any auth state change
+  // Load data whenever auth changes
   loadPerformances();
   loadAuditions();
   loadGalleryItems();
@@ -316,7 +317,7 @@ function loadPerformances() {
           const location = data.location || "";
           const description = data.description || "";
 
-          // ----- PUBLIC CARD VIEW -----
+          // PUBLIC view
           if (publicContainer) {
             const col = document.createElement("div");
             col.classList.add("column", "is-half");
@@ -332,11 +333,10 @@ function loadPerformances() {
                 </div>
               </div>
             `;
-
             publicContainer.appendChild(col);
           }
 
-          // ----- ADMIN VIEW -----
+          // ADMIN view
           if (adminContainer) {
             const div = document.createElement("div");
             div.classList.add("mb-3");
@@ -357,7 +357,6 @@ function loadPerformances() {
           }
         });
 
-        // delete buttons for admin
         if (adminContainer && isCurrentUserAdmin) {
           const deleteButtons =
             adminContainer.querySelectorAll("button[data-id]");
@@ -412,7 +411,7 @@ function loadAuditions() {
           const location = data.location || "";
           const requirements = data.requirements || "";
 
-          // ----- PUBLIC CARD VIEW -----
+          // PUBLIC view
           if (publicContainer) {
             const col = document.createElement("div");
             col.classList.add("column", "is-half");
@@ -428,11 +427,10 @@ function loadAuditions() {
                 </div>
               </div>
             `;
-
             publicContainer.appendChild(col);
           }
 
-          // ----- ADMIN VIEW -----
+          // ADMIN view
           if (adminContainer) {
             const div = document.createElement("div");
             div.classList.add("mb-3");
@@ -540,7 +538,7 @@ function loadGalleryItems() {
           const thumb = data.thumbnailUrl || data.url || "";
           const desc = data.description || "";
 
-          // Public view
+          // PUBLIC view
           if (publicContainer) {
             const col = document.createElement("div");
             col.classList.add("column", "is-one-third");
@@ -574,7 +572,7 @@ function loadGalleryItems() {
             publicContainer.appendChild(col);
           }
 
-          // Admin view
+          // ADMIN view
           if (adminContainer) {
             const div = document.createElement("div");
             div.classList.add("mb-3");
