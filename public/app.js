@@ -6,7 +6,8 @@ let signinbtn = document.querySelector("#signinbtn");
 let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
-// --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
+// --------- ADMIN CONFIG (PUT YOUR EMAILS HERE) --------- //
+// *** keep all emails lowercase ***
 const adminEmails = [
   "admin1@gmail.com",
   "admin2@gmail.com",
@@ -86,10 +87,10 @@ if (signInForm) {
         console.log("Sign-in successful for:", user_email);
         if (smodal2) smodal2.classList.remove("is-active");
         signInForm.reset();
-        // added/updated this section
-        isCurrentUserAdmin = adminEmails.includes(userEmail);
-        alert(`Welcome Back!      Admin? ${isCurrentUserAdmin}`);
-        // --
+
+        // *** DO NOT set isCurrentUserAdmin here.
+        // onAuthStateChanged will handle admin detection.
+        alert("Welcome Back!");
       })
       .catch((error) => {
         console.error("Sign-in error:", error);
@@ -122,14 +123,15 @@ auth.onAuthStateChanged((user) => {
   console.log("Auth state changed. User:", user);
 
   if (user) {
+    // *** canonicalize email to lowercase
     const userEmail = (user.email || "").toLowerCase();
     console.log("Signed in as:", userEmail);
 
-    // check admin
+    // *** check admin once, globally
     isCurrentUserAdmin = adminEmails.includes(userEmail);
     console.log("Is current user admin?", isCurrentUserAdmin);
 
-    // DEBUG: show what Firebase thinks
+    // DEBUG if you want:
     // alert(`Signed in as: ${userEmail}\nAdmin? ${isCurrentUserAdmin}`);
 
     // Show correct auth buttons
@@ -169,7 +171,7 @@ auth.onAuthStateChanged((user) => {
     if (adminPanelGallery) adminPanelGallery.classList.add("is-hidden");
   }
 
-  // Load data whenever auth changes
+  // *** Load data whenever auth changes (admin flag is now correct)
   loadPerformances();
   loadAuditions();
   loadGalleryItems();
@@ -363,6 +365,7 @@ function loadPerformances() {
           }
         });
 
+        // *** Only attach delete handlers if admin
         if (adminContainer && isCurrentUserAdmin) {
           const deleteButtons =
             adminContainer.querySelectorAll("button[data-id]");
