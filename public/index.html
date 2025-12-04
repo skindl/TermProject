@@ -15,14 +15,18 @@
     ></script>
   </head>
   <body class="has-background-black has-text-white">
-    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <nav
+      class="navbar has-background-black"
+      role="navigation"
+      aria-label="main navigation"
+    >
       <div class="container">
         <div class="navbar-brand">
           <a class="navbar-item has-text-weight-bold" href="index.html">
             <img
-              src="images/logo.jpg"
+              src="images/logo2.png"
               alt="Kasper Dance Crew logo"
-              style="max-height: 2rem; margin-right: 8px"
+              style="max-height: 3rem; margin-right: 8px"
             />
             Kasper Dance Crew
           </a>
@@ -50,6 +54,10 @@
           <div class="navbar-end">
             <div class="navbar-item">
               <div class="buttons">
+                <span
+                  id="userEmail"
+                  class="has-text-white mr-2 is-hidden"
+                ></span>
                 <a
                   class="button has-background-light has-text-dark is-hidden"
                   href="#"
@@ -166,34 +174,39 @@
     </div>
 
     <!-- header -->
-    <header class="hero is-medium has-background-grey-dark">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title is-1 has-text-white">Kasper Dance Crew</h1>
-          <p class="subtitle is-4 has-text-grey-light">
-            UW-Madison's Premier K-pop and Hip-Hop Dance Team
-          </p>
-        </div>
+    <header class="hero is-medium has-background-black">
+      <div class="hero-body p-0">
+        <img
+          src="images/logo2.png"
+          alt="Kasper Dance Crew Logo"
+          style="
+            width: 30%;
+            height: 300px;
+            display: block;
+            margin: 80px auto 0 auto;
+          "
+        />
       </div>
     </header>
 
     <section class="section">
       <div class="container has-text-centered">
         <h2 class="title is-3 has-text-white mb-5">Welcome!</h2>
-        <p>Thank you for visiting our site.</p>
-        <br />
-        <br />
-        <p>Please return later, and we will have updated information!</p>
+
+        <p>
+          Go to the About Us page for more information on upcoming events and
+          auditions!
+        </p>
       </div>
     </section>
 
     <footer class="footer has-background-dark has-text-white">
       <div class="content has-text-centered">
         <a href="https://www.instagram.com/kasperdancecrew/?hl=en" class="mr-3">
-          <i class="fa-brands fa-facebook-f fa-2x has-text-white"></i>
+          <i class="fa-brands fa-instagram fa-2x has-text-white"></i>
         </a>
         <a href="https://www.youtube.com/@KASPERDanceCrew">
-          <i class="fa-brands fa-twitter fa-2x has-text-white"></i>
+          <i class="fa-brands fa-youtube fa-2x has-text-white"></i>
         </a>
       </div>
       <div class="content has-text-centered">
@@ -214,7 +227,12 @@
       });
     </script>
 
-    <!-- Firebase -->
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Firebase Configuration and Initialization -->
     <script>
       const firebaseConfig = {
         apiKey: "AIzaSyD2Gbgw2_-1qiYbRiZB4jwaEztLfIPC5aU",
@@ -225,9 +243,13 @@
         appId: "1:954935917465:web:7024e1ce6cce39f822f108",
         measurementId: "G-2ERS9FXKMM",
       };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
     </script>
 
-    <!-- link to javascript file -->
+    <!-- Your app logic -->
     <script src="app.js"></script>
   </body>
 </html>
