@@ -87,9 +87,6 @@ if (signInForm) {
         console.log("Sign-in successful for:", user_email);
         if (smodal2) smodal2.classList.remove("is-active");
         signInForm.reset();
-
-        // *** DO NOT set isCurrentUserAdmin here.
-        // onAuthStateChanged will handle admin detection.
         alert("Welcome Back!");
       })
       .catch((error) => {
@@ -119,6 +116,10 @@ if (signoutbtn) {
 const adminPanelAbout = document.querySelector("#adminPanelAbout");
 const adminPanelGallery = document.querySelector("#adminPanelGallery");
 
+// Contact page elements (only exist on contact.html)
+const contactFormWrapper = document.querySelector("#contactFormWrapper");
+const contactSignInMsg = document.querySelector("#contactSignInMsg");
+
 auth.onAuthStateChanged((user) => {
   console.log("Auth state changed. User:", user);
 
@@ -130,9 +131,6 @@ auth.onAuthStateChanged((user) => {
     // *** check admin once, globally
     isCurrentUserAdmin = adminEmails.includes(userEmail);
     console.log("Is current user admin?", isCurrentUserAdmin);
-
-    // DEBUG if you want:
-    // alert(`Signed in as: ${userEmail}\nAdmin? ${isCurrentUserAdmin}`);
 
     // Show correct auth buttons
     if (signinbtn) signinbtn.classList.add("is-hidden");
@@ -152,6 +150,12 @@ auth.onAuthStateChanged((user) => {
     if (adminPanelGallery) {
       adminPanelGallery.classList.toggle("is-hidden", !isCurrentUserAdmin);
     }
+
+    // CONTACT PAGE VISIBILITY WHEN LOGGED IN
+    if (contactFormWrapper && contactSignInMsg) {
+      contactFormWrapper.classList.remove("is-hidden");
+      contactSignInMsg.classList.add("is-hidden");
+    }
   } else {
     console.log("No user signed in");
 
@@ -169,6 +173,12 @@ auth.onAuthStateChanged((user) => {
 
     if (adminPanelAbout) adminPanelAbout.classList.add("is-hidden");
     if (adminPanelGallery) adminPanelGallery.classList.add("is-hidden");
+
+    // CONTACT PAGE VISIBILITY WHEN LOGGED OUT
+    if (contactFormWrapper && contactSignInMsg) {
+      contactFormWrapper.classList.add("is-hidden");
+      contactSignInMsg.classList.remove("is-hidden");
+    }
   }
 
   // *** Load data whenever auth changes (admin flag is now correct)
@@ -365,7 +375,7 @@ function loadPerformances() {
           }
         });
 
-        // *** Only attach delete handlers if admin
+        // Only attach delete handlers if admin
         if (adminContainer && isCurrentUserAdmin) {
           const deleteButtons =
             adminContainer.querySelectorAll("button[data-id]");
