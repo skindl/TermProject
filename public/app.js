@@ -77,6 +77,7 @@ signoutbtn.addEventListener("click", () => {
 
 //------------------------ AUTH STATE LISTENER -------------------------------//
 auth.onAuthStateChanged((user) => {
+  const eventButtons = document.querySelectorAll(".add-delete-btn");
   if (user) {
     // User is signed in
     signinbtn.classList.add("is-hidden");
@@ -86,6 +87,12 @@ auth.onAuthStateChanged((user) => {
     // Show user email
     userEmailDisplay.textContent = user.email;
     userEmailDisplay.classList.remove("is-hidden");
+
+    // Show event buttons
+    document.querySelector("#userEventsSection").classList.remove("is-hidden");
+
+    // render saved events
+    renderUserEvents(user.uid);
   } else {
     // User is signed out
     signinbtn.classList.remove("is-hidden");
@@ -95,8 +102,112 @@ auth.onAuthStateChanged((user) => {
     // Hide user email
     userEmailDisplay.textContent = "";
     userEmailDisplay.classList.add("is-hidden");
+
+    // Hide event buttons
+    eventButtons.forEach((btn) => btn.classList.add("is-hidden"));
+
+    // hide user events section
+    document.querySelector("#userEventsSection").classList.add("is-hidden");
+
+    document.querySelector("#userEventCards").innerHTML = "";
   }
 });
+
+// add event buttons
+document.querySelectorAll(".add-delete-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const card = btn.closest("[data-event-id]");
+    const eventId = card.getAttribute("data-event-id");
+
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Please sign in to save events.");
+      return;
+    }
+
+    const eventInfo = eventData[eventId];
+
+    if (!eventInfo) return;
+
+    // Save event under this user in Firestore
+    db.collection("users")
+      .doc(user.uid)
+      .collection("myEvents")
+      .doc(eventId)
+      .set(eventInfo)
+      .then(() => {
+        renderUserEvents(user.uid);
+      });
+  });
+});
+
+// put added event info in cards in separate section
+function renderUserEvents(uid) {
+  const container = document.querySelector("#userEventCards");
+
+  db.collection("users")
+    .doc(uid)
+    .collection("myEvents")
+    .get()
+    .then((snapshot) => {
+      container.innerHTML = ""; // clear old cards
+
+      snapshot.forEach((doc) => {
+        const ev = doc.data();
+
+        const card = document.createElement("div");
+        card.classList.add(
+          "card",
+          "has-background-black-ter",
+          "has-text-white",
+          "mb-4"
+        );
+
+        card.innerHTML = `
+          <div class="card-content">
+            <p class="title is-5 has-text-white">${ev.title}</p>
+            <p class="subtitle is-6 has-text-grey-light">Date: ${ev.date}</p>
+            ${
+              ev.time
+                ? `<p class="subtitle is-6 has-text-grey-light">Time: ${ev.time}</p>`
+                : ""
+            }
+            ${
+              ev.location
+                ? `<p class="subtitle is-6 has-text-grey-light">Location: ${ev.location}</p>`
+                : ""
+            }
+
+            <button class="button is-danger mt-3 delete-event-btn" data-id="${
+              doc.id
+            }">
+              Delete Event
+            </button>
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+
+      // enable delete buttons
+      enableDeleteButtons(uid);
+    });
+}
+
+function enableDeleteButtons(uid) {
+  document.querySelectorAll(".delete-event-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const eventId = btn.getAttribute("data-id");
+
+      db.collection("users")
+        .doc(uid)
+        .collection("myEvents")
+        .doc(eventId)
+        .delete()
+        .then(() => renderUserEvents(uid));
+    });
+  });
+}
 
 // ---------------- CONTACT FORM SUBMISSION ---------------- //
 const contactForm = document.querySelector("#contact_form");
