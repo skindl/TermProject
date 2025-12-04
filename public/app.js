@@ -5,7 +5,10 @@ let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
 // --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
-const adminEmails = ["admin@gmail.com"];
+// Use your REAL email(s) that you log in with
+const adminEmails = ["admin@gmail.com", "admin2@gmail.com"].map((e) =>
+  e.toLowerCase()
+);
 
 let isCurrentUserAdmin = false;
 
@@ -47,18 +50,20 @@ if (signUpForm) {
   signUpForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    let user_email = document.querySelector("#sign_email").value;
+    let user_email = document.querySelector("#sign_email").value.trim();
     let user_pass = document.querySelector("#sign_pass").value;
 
     auth
       .createUserWithEmailAndPassword(user_email, user_pass)
       .then(() => {
+        console.log("Sign-up successful for:", user_email);
         if (smodal) smodal.classList.remove("is-active");
         signUpForm.reset();
         alert("Welcome! We are glad you joined us!");
       })
       .catch((error) => {
-        alert(error.message);
+        console.error("Sign-up error:", error);
+        alert("Sign-up error: " + error.message);
       });
   });
 }
@@ -69,18 +74,20 @@ if (signInForm) {
   signInForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    let user_email = document.querySelector("#sign_in_email").value;
+    let user_email = document.querySelector("#sign_in_email").value.trim();
     let user_pass = document.querySelector("#sign_in_pass").value;
 
     auth
       .signInWithEmailAndPassword(user_email, user_pass)
       .then(() => {
+        console.log("Sign-in successful for:", user_email);
         if (smodal2) smodal2.classList.remove("is-active");
         signInForm.reset();
         alert("Welcome Back!");
       })
-      .catch(() => {
-        alert("Incorrect login!");
+      .catch((error) => {
+        console.error("Sign-in error:", error);
+        alert("Sign-in error: " + error.message);
       });
   });
 }
@@ -88,9 +95,16 @@ if (signInForm) {
 //----------------------------- SIGN OUT BUTTON -------------------------------//
 if (signoutbtn) {
   signoutbtn.addEventListener("click", () => {
-    auth.signOut().then(() => {
-      alert("You've securely logged out, see you next time!");
-    });
+    auth
+      .signOut()
+      .then(() => {
+        console.log("User signed out");
+        alert("You've securely logged out, see you next time!");
+      })
+      .catch((error) => {
+        console.error("Sign-out error:", error);
+        alert("Sign-out error: " + error.message);
+      });
   });
 }
 
@@ -99,7 +113,12 @@ const adminPanelAbout = document.querySelector("#adminPanelAbout");
 const adminPanelGallery = document.querySelector("#adminPanelGallery");
 
 auth.onAuthStateChanged((user) => {
+  console.log("Auth state changed. User:", user);
+
   if (user) {
+    const userEmail = (user.email || "").toLowerCase();
+    console.log("Signed in as:", userEmail);
+
     // Show correct auth buttons
     if (signinbtn) signinbtn.classList.add("is-hidden");
     if (signupbtn) signupbtn.classList.add("is-hidden");
@@ -112,7 +131,8 @@ auth.onAuthStateChanged((user) => {
     }
 
     // Check admin
-    isCurrentUserAdmin = adminEmails.includes(user.email);
+    isCurrentUserAdmin = adminEmails.includes(userEmail);
+    console.log("Is current user admin?", isCurrentUserAdmin);
 
     // Toggle admin panels
     if (adminPanelAbout) {
@@ -131,6 +151,8 @@ auth.onAuthStateChanged((user) => {
       }
     }
   } else {
+    console.log("No user signed in");
+
     // User is signed out
     if (signinbtn) signinbtn.classList.remove("is-hidden");
     if (signupbtn) signupbtn.classList.remove("is-hidden");
@@ -176,7 +198,8 @@ if (contactForm) {
         contactForm.reset();
       })
       .catch((error) => {
-        alert("Error sending message: " + error);
+        console.error("Contact form error:", error);
+        alert("Error sending message: " + error.message);
       });
   });
 }
@@ -200,7 +223,8 @@ if (newsletterForm) {
         newsletterForm.reset();
       })
       .catch((error) => {
-        alert("Error signing up: " + error);
+        console.error("Newsletter error:", error);
+        alert("Error signing up: " + error.message);
       });
   });
 }
@@ -231,7 +255,10 @@ if (addPerfForm) {
         alert("Performance added!");
         addPerfForm.reset();
       })
-      .catch((err) => alert("Error adding performance: " + err));
+      .catch((err) => {
+        console.error("Add performance error:", err);
+        alert("Error adding performance: " + err.message);
+      });
   });
 }
 
@@ -259,7 +286,10 @@ if (addAudForm) {
         alert("Audition added!");
         addAudForm.reset();
       })
-      .catch((err) => alert("Error adding audition: " + err));
+      .catch((err) => {
+        console.error("Add audition error:", err);
+        alert("Error adding audition: " + err.message);
+      });
   });
 }
 
@@ -272,83 +302,91 @@ function loadPerformances() {
 
   db.collection("performances")
     .orderBy("date")
-    .onSnapshot((snapshot) => {
-      if (publicContainer) publicContainer.innerHTML = "";
-      if (adminContainer) adminContainer.innerHTML = "";
+    .onSnapshot(
+      (snapshot) => {
+        if (publicContainer) publicContainer.innerHTML = "";
+        if (adminContainer) adminContainer.innerHTML = "";
 
-      if (snapshot.empty) {
-        if (publicContainer) {
-          publicContainer.innerHTML =
-            "<p>No upcoming performances right now.</p>";
+        if (snapshot.empty) {
+          if (publicContainer) {
+            publicContainer.innerHTML =
+              "<p>No upcoming performances right now.</p>";
+          }
+          return;
         }
-        return;
-      }
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const title = data.title || "Untitled Performance";
-        const date = data.date || "";
-        const time = data.time || "";
-        const location = data.location || "";
-        const description = data.description || "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const title = data.title || "Untitled Performance";
+          const date = data.date || "";
+          const time = data.time || "";
+          const location = data.location || "";
+          const description = data.description || "";
 
-        // ----- PUBLIC CARD VIEW -----
-        if (publicContainer) {
-          const col = document.createElement("div");
-          col.classList.add("column", "is-half");
+          // ----- PUBLIC CARD VIEW -----
+          if (publicContainer) {
+            const col = document.createElement("div");
+            col.classList.add("column", "is-half");
 
-          col.innerHTML = `
-            <div class="card has-background-grey-darker has-text-white mb-4">
-              <div class="card-content">
-                <p class="title is-4 has-text-white">${title}</p>
-                <p class="subtitle is-6 has-text-grey-light">
-                  ${date} @ ${time} — ${location}
-                </p>
-                <p>${description}</p>
+            col.innerHTML = `
+              <div class="card has-background-grey-darker has-text-white mb-4">
+                <div class="card-content">
+                  <p class="title is-4 has-text-white">${title}</p>
+                  <p class="subtitle is-6 has-text-grey-light">
+                    ${date} @ ${time} — ${location}
+                  </p>
+                  <p>${description}</p>
+                </div>
               </div>
-            </div>
-          `;
+            `;
 
-          publicContainer.appendChild(col);
-        }
-
-        // ----- ADMIN VIEW -----
-        if (adminContainer) {
-          const div = document.createElement("div");
-          div.classList.add("mb-3");
-
-          let html = `
-            <p><strong>${title}</strong></p>
-            <p>${date} ${time} @ ${location}</p>
-            <p>${description}</p>
-          `;
-
-          if (isCurrentUserAdmin) {
-            html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
+            publicContainer.appendChild(col);
           }
 
-          html += "<hr />";
-          div.innerHTML = html;
-          adminContainer.appendChild(div);
-        }
-      });
+          // ----- ADMIN VIEW -----
+          if (adminContainer) {
+            const div = document.createElement("div");
+            div.classList.add("mb-3");
 
-      // delete buttons for admin
-      if (adminContainer && isCurrentUserAdmin) {
-        const deleteButtons =
-          adminContainer.querySelectorAll("button[data-id]");
-        deleteButtons.forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-id");
-            db.collection("performances")
-              .doc(id)
-              .delete()
-              .then(() => alert("Performance deleted."))
-              .catch((err) => alert("Error deleting performance: " + err));
-          });
+            let html = `
+              <p><strong>${title}</strong></p>
+              <p>${date} ${time} @ ${location}</p>
+              <p>${description}</p>
+            `;
+
+            if (isCurrentUserAdmin) {
+              html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
+            }
+
+            html += "<hr />";
+            div.innerHTML = html;
+            adminContainer.appendChild(div);
+          }
         });
+
+        // delete buttons for admin
+        if (adminContainer && isCurrentUserAdmin) {
+          const deleteButtons =
+            adminContainer.querySelectorAll("button[data-id]");
+          deleteButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const id = btn.getAttribute("data-id");
+              db.collection("performances")
+                .doc(id)
+                .delete()
+                .then(() => alert("Performance deleted."))
+                .catch((err) => {
+                  console.error("Delete performance error:", err);
+                  alert("Error deleting performance: " + err.message);
+                });
+            });
+          });
+        }
+      },
+      (error) => {
+        console.error("loadPerformances snapshot error:", error);
       }
-    });
+    );
 }
 
 // Load auditions (public + admin) - CARD VIEW
@@ -360,81 +398,90 @@ function loadAuditions() {
 
   db.collection("auditions")
     .orderBy("date")
-    .onSnapshot((snapshot) => {
-      if (publicContainer) publicContainer.innerHTML = "";
-      if (adminContainer) adminContainer.innerHTML = "";
+    .onSnapshot(
+      (snapshot) => {
+        if (publicContainer) publicContainer.innerHTML = "";
+        if (adminContainer) adminContainer.innerHTML = "";
 
-      if (snapshot.empty) {
-        if (publicContainer) {
-          publicContainer.innerHTML = "<p>No upcoming auditions right now.</p>";
+        if (snapshot.empty) {
+          if (publicContainer) {
+            publicContainer.innerHTML =
+              "<p>No upcoming auditions right now.</p>";
+          }
+          return;
         }
-        return;
-      }
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const season = data.season || "Upcoming Audition";
-        const date = data.date || "";
-        const time = data.time || "";
-        const location = data.location || "";
-        const requirements = data.requirements || "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          const season = data.season || "Upcoming Audition";
+          const date = data.date || "";
+          const time = data.time || "";
+          const location = data.location || "";
+          const requirements = data.requirements || "";
 
-        // ----- PUBLIC CARD VIEW -----
-        if (publicContainer) {
-          const col = document.createElement("div");
-          col.classList.add("column", "is-half");
+          // ----- PUBLIC CARD VIEW -----
+          if (publicContainer) {
+            const col = document.createElement("div");
+            col.classList.add("column", "is-half");
 
-          col.innerHTML = `
-            <div class="card has-background-grey-darker has-text-white mb-4">
-              <div class="card-content">
-                <p class="title is-4 has-text-white">${season}</p>
-                <p class="subtitle is-6 has-text-grey-light">
-                  ${date} @ ${time} — ${location}
-                </p>
-                <p>${requirements}</p>
+            col.innerHTML = `
+              <div class="card has-background-grey-darker has-text-white mb-4">
+                <div class="card-content">
+                  <p class="title is-4 has-text-white">${season}</p>
+                  <p class="subtitle is-6 has-text-grey-light">
+                    ${date} @ ${time} — ${location}
+                  </p>
+                  <p>${requirements}</p>
+                </div>
               </div>
-            </div>
-          `;
+            `;
 
-          publicContainer.appendChild(col);
-        }
-
-        // ----- ADMIN VIEW -----
-        if (adminContainer) {
-          const div = document.createElement("div");
-          div.classList.add("mb-3");
-
-          let html = `
-            <p><strong>${season}</strong></p>
-            <p>${date} ${time} @ ${location}</p>
-            <p>${requirements}</p>
-          `;
-
-          if (isCurrentUserAdmin) {
-            html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
+            publicContainer.appendChild(col);
           }
 
-          html += "<hr />";
-          div.innerHTML = html;
-          adminContainer.appendChild(div);
-        }
-      });
+          // ----- ADMIN VIEW -----
+          if (adminContainer) {
+            const div = document.createElement("div");
+            div.classList.add("mb-3");
 
-      if (adminContainer && isCurrentUserAdmin) {
-        const deleteButtons =
-          adminContainer.querySelectorAll("button[data-id]");
-        deleteButtons.forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-id");
-            db.collection("auditions")
-              .doc(id)
-              .delete()
-              .then(() => alert("Audition deleted."))
-              .catch((err) => alert("Error deleting audition: " + err));
-          });
+            let html = `
+              <p><strong>${season}</strong></p>
+              <p>${date} ${time} @ ${location}</p>
+              <p>${requirements}</p>
+            `;
+
+            if (isCurrentUserAdmin) {
+              html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
+            }
+
+            html += "<hr />";
+            div.innerHTML = html;
+            adminContainer.appendChild(div);
+          }
         });
+
+        if (adminContainer && isCurrentUserAdmin) {
+          const deleteButtons =
+            adminContainer.querySelectorAll("button[data-id]");
+          deleteButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const id = btn.getAttribute("data-id");
+              db.collection("auditions")
+                .doc(id)
+                .delete()
+                .then(() => alert("Audition deleted."))
+                .catch((err) => {
+                  console.error("Delete audition error:", err);
+                  alert("Error deleting audition: " + err.message);
+                });
+            });
+          });
+        }
+      },
+      (error) => {
+        console.error("loadAuditions snapshot error:", error);
       }
-    });
+    );
 }
 
 /* ===================== ADMIN: GALLERY ITEMS ===================== */
@@ -463,7 +510,10 @@ if (addGalleryForm) {
         alert("Gallery item added!");
         addGalleryForm.reset();
       })
-      .catch((err) => alert("Error adding gallery item: " + err));
+      .catch((err) => {
+        console.error("Add gallery error:", err);
+        alert("Error adding gallery item: " + err.message);
+      });
   });
 }
 
@@ -476,94 +526,102 @@ function loadGalleryItems() {
 
   db.collection("galleryItems")
     .orderBy("title")
-    .onSnapshot((snapshot) => {
-      if (publicContainer) publicContainer.innerHTML = "";
-      if (adminContainer) adminContainer.innerHTML = "";
+    .onSnapshot(
+      (snapshot) => {
+        if (publicContainer) publicContainer.innerHTML = "";
+        if (adminContainer) adminContainer.innerHTML = "";
 
-      if (snapshot.empty) {
-        if (publicContainer) {
-          publicContainer.innerHTML = "<p>No gallery items yet.</p>";
+        if (snapshot.empty) {
+          if (publicContainer) {
+            publicContainer.innerHTML = "<p>No gallery items yet.</p>";
+          }
+          return;
         }
-        return;
-      }
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
+        snapshot.forEach((doc) => {
+          const data = doc.data();
 
-        const type = data.type || "image";
-        const title = data.title || "Gallery Item";
-        const url = data.url || "";
-        const thumb = data.thumbnailUrl || data.url || "";
-        const desc = data.description || "";
+          const type = data.type || "image";
+          const title = data.title || "Gallery Item";
+          const url = data.url || "";
+          const thumb = data.thumbnailUrl || data.url || "";
+          const desc = data.description || "";
 
-        // Public view
-        if (publicContainer) {
-          const col = document.createElement("div");
-          col.classList.add("column", "is-one-third");
+          // Public view
+          if (publicContainer) {
+            const col = document.createElement("div");
+            col.classList.add("column", "is-one-third");
 
-          let mediaHtml = "";
+            let mediaHtml = "";
 
-          if (type === "video") {
-            mediaHtml = `
-              <div class="video">
-                <iframe src="${url}" frameborder="0" allowfullscreen style="width:100%;height:200px;"></iframe>
-              </div>`;
-          } else {
-            mediaHtml = `
-              <figure class="image">
-                <img src="${thumb}" alt="${title}">
-              </figure>`;
+            if (type === "video") {
+              mediaHtml = `
+                <div class="video">
+                  <iframe src="${url}" frameborder="0" allowfullscreen style="width:100%;height:200px;"></iframe>
+                </div>`;
+            } else {
+              mediaHtml = `
+                <figure class="image">
+                  <img src="${thumb}" alt="${title}">
+                </figure>`;
+            }
+
+            col.innerHTML = `
+              <div class="card has-background-grey-darker has-text-white">
+                <div class="card-image">
+                  ${mediaHtml}
+                </div>
+                <div class="card-content">
+                  <p class="title is-5 has-text-white">${title}</p>
+                  <p class="has-text-grey-light">${desc}</p>
+                </div>
+              </div>
+            `;
+
+            publicContainer.appendChild(col);
           }
 
-          col.innerHTML = `
-            <div class="card has-background-grey-darker has-text-white">
-              <div class="card-image">
-                ${mediaHtml}
-              </div>
-              <div class="card-content">
-                <p class="title is-5 has-text-white">${title}</p>
-                <p class="has-text-grey-light">${desc}</p>
-              </div>
-            </div>
-          `;
+          // Admin view
+          if (adminContainer) {
+            const div = document.createElement("div");
+            div.classList.add("mb-3");
 
-          publicContainer.appendChild(col);
-        }
+            let html = `
+              <p><strong>${title}</strong> (${type})</p>
+              <p>${url}</p>
+              <p>${desc}</p>
+            `;
 
-        // Admin view
-        if (adminContainer) {
-          const div = document.createElement("div");
-          div.classList.add("mb-3");
+            if (isCurrentUserAdmin) {
+              html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
+            }
 
-          let html = `
-            <p><strong>${title}</strong> (${type})</p>
-            <p>${url}</p>
-            <p>${desc}</p>
-          `;
-
-          if (isCurrentUserAdmin) {
-            html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
+            html += "<hr />";
+            div.innerHTML = html;
+            adminContainer.appendChild(div);
           }
-
-          html += "<hr />";
-          div.innerHTML = html;
-          adminContainer.appendChild(div);
-        }
-      });
-
-      if (adminContainer && isCurrentUserAdmin) {
-        const deleteButtons =
-          adminContainer.querySelectorAll("button[data-id]");
-        deleteButtons.forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-id");
-            db.collection("galleryItems")
-              .doc(id)
-              .delete()
-              .then(() => alert("Gallery item deleted."))
-              .catch((err) => alert("Error deleting gallery item: " + err));
-          });
         });
+
+        if (adminContainer && isCurrentUserAdmin) {
+          const deleteButtons =
+            adminContainer.querySelectorAll("button[data-id]");
+          deleteButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const id = btn.getAttribute("data-id");
+              db.collection("galleryItems")
+                .doc(id)
+                .delete()
+                .then(() => alert("Gallery item deleted."))
+                .catch((err) => {
+                  console.error("Delete gallery error:", err);
+                  alert("Error deleting gallery item: " + err.message);
+                });
+            });
+          });
+        }
+      },
+      (error) => {
+        console.error("loadGalleryItems snapshot error:", error);
       }
-    });
+    );
 }
