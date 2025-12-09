@@ -348,6 +348,7 @@ function loadPerformances() {
                     ${date} @ ${time} — ${location}
                   </p>
                   <p>${description}</p>
+                  <button class="button has-background-white has-text-black addButton" type="button"> Add Event </button>
                 </div>
               </div>
             `;
@@ -635,3 +636,18 @@ function loadGalleryItems() {
       }
     );
 }
+
+// add button
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("addButton")) {
+    const user = auth.currentUser;
+
+    if (!user) {
+      alert("You must be logged in to add an event!");
+      return;
+    }
+
+    alert("Event added!");
+    console.log("Event added by:", user.email);
+  }
+});
