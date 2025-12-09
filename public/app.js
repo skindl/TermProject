@@ -355,7 +355,13 @@ function loadPerformances() {
                     ${date} @ ${time} — ${location}
                   </p>
                   <p>${description}</p>
-                  <button class="button has-background-white has-text-black addButton" type="button"> Add Event </button>
+                  <button 
+                    class="button has-background-white has-text-black addButton"
+                    data-type="performance"
+                    data-id="${doc.id}"
+                    type="button">
+                    Add Event
+                  </button>
                 </div>
               </div>
             `;
@@ -451,6 +457,13 @@ function loadAuditions() {
                     ${date} @ ${time} — ${location}
                   </p>
                   <p>${requirements}</p>
+                  <button 
+                    class="button has-background-white has-text-black addButton"
+                    data-type="audition"
+                    data-id="${doc.id}"
+                    type="button">
+                    Add Event
+                  </button>
                 </div>
               </div>
             `;
@@ -645,16 +658,54 @@ function loadGalleryItems() {
 }
 
 // add button
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("addButton")) {
-    const user = auth.currentUser;
+// document.addEventListener("click", (e) => {
+//   if (e.target.classList.contains("addButton")) {
+//     const user = auth.currentUser;
 
-    if (!user) {
-      alert("You must be logged in to add an event!");
-      return;
+//     if (!user) {
+//       alert("You must be logged in to add an event!");
+//       return;
+//     }
+
+//     alert("Event added!");
+//     console.log("Event added by:", user.email);
+//   }
+// });
+
+// add events to user document in users collection
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("addButton")) return;
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    alert("You must be logged in to add an event!");
+    return;
+  }
+
+  const eventId = e.target.dataset.id;
+  const eventType = e.target.dataset.type;
+  const userRef = db.collection("users").doc(user.uid);
+
+  try {
+    if (eventType === "performance") {
+      await userRef.set(
+        {
+          addedPerformances: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    } else if (eventType === "audition") {
+      await userRef.set(
+        {
+          addedAuditions: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
     }
 
     alert("Event added!");
-    console.log("Event added by:", user.email);
+  } catch (error) {
+    console.error(error);
   }
 });
