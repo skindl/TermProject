@@ -356,11 +356,17 @@ function loadPerformances() {
                   </p>
                   <p>${description}</p>
                   <button 
-                    class="button has-background-white has-text-black addButton"
+                    class="button has-background-white has-text-black mt-2 addButton"
                     data-type="performance"
                     data-id="${doc.id}"
                     type="button">
                     Add Event
+                  </button>
+                  <button 
+                    class="button is-success notifyButton mt-3 ml-4"
+                    data-type="performance"
+                    data-id="${doc.id}">
+                    <i class="fa-solid fa-bell"></i>
                   </button>
                 </div>
               </div>
@@ -458,11 +464,17 @@ function loadAuditions() {
                   </p>
                   <p>${requirements}</p>
                   <button 
-                    class="button has-background-white has-text-black addButton"
+                    class="button has-background-white has-text-black mt-2 addButton"
                     data-type="audition"
                     data-id="${doc.id}"
                     type="button">
                     Add Event
+                  </button>
+                  <button 
+                    class="button is-success notifyButton mt-3 ml-4"
+                    data-type="audition"
+                    data-id="${doc.id}">
+                    <i class="fa-solid fa-bell"></i>
                   </button>
                 </div>
               </div>
@@ -842,4 +854,117 @@ async function loadMyEvents() {
 // Call loadMyEvents whenever auth changes
 auth.onAuthStateChanged((user) => {
   loadMyEvents();
+});
+
+// notify button adding those events into user document in users collection
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("notifyButton")) return;
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You must be logged in to get notifications for events!");
+    return;
+  }
+
+  const eventId = e.target.dataset.id;
+  const eventType = e.target.dataset.type;
+  const userRef = db.collection("users").doc(user.uid);
+
+  try {
+    const userDoc = await userRef.get();
+    const userData = userDoc.data() || {};
+
+    if (eventType === "performance") {
+      const notifyPerformances = userData.notifyPerformances || [];
+      if (notifyPerformances.includes(eventId)) {
+        alert("You are already set to be notified for this performance!");
+        return;
+      }
+      await userRef.set(
+        {
+          notifyPerformances: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    } else if (eventType === "audition") {
+      const notifyAuditions = userData.notifyAuditions || [];
+      if (notifyAuditions.includes(eventId)) {
+        alert("You are already set to be notified for this audition!");
+        return;
+      }
+      await userRef.set(
+        {
+          notifyAuditions: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    }
+
+    alert("You will be notified for this event!");
+  } catch (error) {
+    console.error("Error setting notification:", error);
+    alert("Error: " + error.message);
+  }
+});
+
+// Notify users of their selected events on About Us page
+async function showNotifications() {
+  const user = auth.currentUser;
+  if (!user) return; // no user signed in
+
+  try {
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const userData = userDoc.data() || {};
+
+    const notifyPerformances = userData.notifyPerformances || [];
+    const notifyAuditions = userData.notifyAuditions || [];
+
+    let performanceNames = [];
+    let auditionNames = [];
+
+    // Fetch performance titles
+    for (let perfId of notifyPerformances) {
+      const perfDoc = await db.collection("performances").doc(perfId).get();
+      if (perfDoc.exists) {
+        performanceNames.push(perfDoc.data().title);
+      }
+    }
+
+    // Fetch audition names
+    for (let audId of notifyAuditions) {
+      const audDoc = await db.collection("auditions").doc(audId).get();
+      if (audDoc.exists) {
+        auditionNames.push(audDoc.data().season);
+      }
+    }
+
+    // Create the message
+    let message = "";
+    if (performanceNames.length > 0) {
+      message += `Reminder that the following performances are coming up:\n- ${performanceNames.join(
+        "\n- "
+      )}\n\n`;
+    }
+    if (auditionNames.length > 0) {
+      message += `Reminder that the following auditions are coming up:\n- ${auditionNames.join(
+        "\n- "
+      )}\n`;
+    }
+
+    if (message) {
+      alert(message);
+    }
+  } catch (error) {
+    console.error("Error fetching notification events:", error);
+  }
+}
+
+// Call the function when the About Us page is loaded and user is signed in
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // Optional: check if we are on About Us page
+    if (window.location.pathname.includes("about")) {
+      showNotifications();
+    }
+  }
 });
