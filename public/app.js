@@ -59,8 +59,15 @@ if (signUpForm) {
 
     auth
       .createUserWithEmailAndPassword(user_email, user_pass)
-      .then(() => {
+      .then((cred) => {
         console.log("Sign-up successful for:", user_email);
+
+        // Add user to Firestore "users" collection
+        return db.collection("users").doc(cred.user.uid).set({
+          email: user_email.toLowerCase(),
+        });
+      })
+      .then(() => {
         if (smodal) smodal.classList.remove("is-active");
         signUpForm.reset();
         alert("Welcome! We are glad you joined us!");
