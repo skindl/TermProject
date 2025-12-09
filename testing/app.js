@@ -13,22 +13,22 @@
 
 //   //   go to the site to be tested
 
-//   await page.goto("https://mycar-collection-f21.web.app/index_.html");
+//   await page.goto("http://127.0.0.1:5500/public/index.html");
 
 //   //   click on the sign-in button
 //   await page.click("#signinbtn");
 
 //   // provide email and password to sign in ... type(HTML_ID, value)
 
-//   await page.type("#email_", "test1234555@gmail.com");
-//   await page.type("#password_", "test1234555@gmail.com");
+//   await page.type("#sign_in_email", "admin2@gmail.com");
+//   await page.type("#sign_in_pass", "admin2");
 
 //   // click the submit button
-//   await page.click("#signin_form > div:nth-child(3) > div > button");
+//   await page.click("#sign_in_form button[type='submit']");
 
 //   //   take a screenshot
 //   await page.screenshot({
-//     path: "mysite.jpg",
+//     path: "kasper_after_login.jpg",
 //     fullPage: true,
 //   });
 
@@ -50,76 +50,156 @@
 // // call the function
 // go();
 
+// KDC Puppeteer Script to Test Admin Features
+
+// const puppeteer = require("puppeteer");
+
+// async function go() {
+//   const browser = await puppeteer.launch({
+//     headless: false,
+//     slowMo: 50,
+//   });
+
+//   const page = await browser.newPage();
+
+//   // Go to Kasper Dance Crew site
+//   await page.goto("http://127.0.0.1:5500/public/index.html", {
+//     waitUntil: "networkidle2",
+//   });
+
+//   // Click sign in button (opens modal)
+//   await page.click("#signinbtn");
+
+//   // Type email & password
+//   await page.type("#sign_in_email", "admin2@gmail.com");
+//   await page.type("#sign_in_pass", "admin2");
+
+//   // Submit the form
+//   await page.click("#sign_in_form button[type='submit']");
+
+//   // Wait for authentication to finish
+//   await page.waitForTimeout(2500);
+
+//   // Screenshot after login
+//   await page.screenshot({
+//     path: "kasper_after_login.jpg",
+//     fullPage: true,
+//   });
+
+//   //
+//   // OPTIONAL: Add a performance (if you want Puppeteer to test admin features)
+//   //
+//   // Navigate to About page
+//   await page.goto("http://127.0.0.1:5500/public/about.html", {
+//     waitUntil: "networkidle2",
+//   });
+
+//   // Wait for admin panel
+//   await page.waitForSelector("#adminPanelAbout", { visible: true });
+
+//   // Fill performance form
+//   await page.type("#perf_title", "Puppeteer Test Performance");
+//   await page.type("#perf_date", "2025-12-25");
+//   await page.type("#perf_time", "7:00 PM");
+//   await page.type("#perf_location", "KDC Studio");
+//   await page.type("#perf_desc", "Automated test event created by Puppeteer.");
+
+//   // Submit performance
+//   await page.click("#add_performance_form button[type='submit']");
+
+//   // Wait for Firestore write to complete
+//   await page.waitForTimeout(2000);
+
+//   // Screenshot after adding performance
+//   await page.screenshot({
+//     path: "kasper_after_add_performance.jpg",
+//     fullPage: true,
+//   });
+
+//   // Close browser after 5 seconds
+//   await page.waitForTimeout(5000);
+//   await browser.close();
+// }
+
+// go();
+
 const puppeteer = require("puppeteer");
 
 async function go() {
   const browser = await puppeteer.launch({
     headless: false,
-    slowMo: 50,
+    slowMo: 80,
+
+    defaultViewport: { width: 1280, height: 800 },
   });
 
   const page = await browser.newPage();
 
-  // Go to Kasper Dance Crew site
-  await page.goto("https://YOUR-SITE.web.app", {
+  // 1) Go to home page
+  await page.goto("http://127.0.0.1:5500/public/index.html", {
     waitUntil: "networkidle2",
   });
 
   // Click sign in button (opens modal)
+  await page.waitForSelector("#signinbtn", { visible: true });
   await page.click("#signinbtn");
 
-  // Wait for sign-in modal to appear
+  // Wait for sign-in form to show
   await page.waitForSelector("#sign_in_form", { visible: true });
 
   // Type email & password
   await page.type("#sign_in_email", "admin2@gmail.com");
   await page.type("#sign_in_pass", "admin2");
 
-  // Submit the form
-  await page.click("#sign_in_form button[type='submit']");
+  // Click the submit INPUT inside the form
+  await page.waitForSelector("#sign_in_form input[type='submit']", {
+    visible: true,
+  });
+  await page.click("#sign_in_form input[type='submit']");
 
-  // Wait for authentication to finish
-  await page.waitForTimeout(2500);
-
-  // Screenshot after login
+  // 7) Screenshot after login
   await page.screenshot({
     path: "kasper_after_login.jpg",
     fullPage: true,
   });
 
-  //
-  // OPTIONAL: Add a performance (if you want Puppeteer to test admin features)
-  //
-  // Navigate to About page
-  await page.goto("https://YOUR-SITE.web.app/about.html", {
+  // 8) Go to About page (admin panel is here)
+  await page.goto("http://127.0.0.1:5500/public/about.html", {
     waitUntil: "networkidle2",
   });
 
-  // Wait for admin panel
-  await page.waitForSelector("#adminPanelAbout", { visible: true });
+  // 9) Wait for admin panel to become visible
 
-  // Fill performance form
+  await page.waitForSelector("#adminPanelAbout", {
+    visible: true,
+    timeout: 10000,
+  });
+
+  // 10) Fill performance form
+  await page.waitForSelector("#add_performance_form", { visible: true });
   await page.type("#perf_title", "Puppeteer Test Performance");
   await page.type("#perf_date", "2025-12-25");
   await page.type("#perf_time", "7:00 PM");
   await page.type("#perf_location", "KDC Studio");
   await page.type("#perf_desc", "Automated test event created by Puppeteer.");
 
-  // Submit performance
+  // 11) Click "Add Performance" button
+  await page.waitForSelector("#add_performance_form button[type='submit']", {
+    visible: true,
+  });
   await page.click("#add_performance_form button[type='submit']");
 
-  // Wait for Firestore write to complete
-  await page.waitForTimeout(2000);
-
-  // Screenshot after adding performance
+  // 13) Screenshot after adding performance
   await page.screenshot({
     path: "kasper_after_add_performance.jpg",
     fullPage: true,
   });
 
-  // Close browser after 5 seconds
-  await page.waitForTimeout(5000);
+  // 14) Close browser
+
   await browser.close();
 }
 
-go();
+go().catch((err) => {
+  console.error("Puppeteer error:", err);
+});

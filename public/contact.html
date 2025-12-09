@@ -50,8 +50,8 @@
           <div class="navbar-start">
             <a class="navbar-item" href="index.html">Home</a>
             <a class="navbar-item" href="about.html">About Us</a>
-            <a class="navbar-item" href="gallery.html">Gallery</a>
             <a class="navbar-item" href="contact.html">Contact Us</a>
+            <a class="navbar-item" href="gallery.html">Gallery</a>
           </div>
 
           <div class="navbar-end">
@@ -104,69 +104,80 @@
     <!-- MAIN CONTENT -->
     <main class="section">
       <div class="container is-max-desktop">
-        <!-- CONTACT FORM -->
+        <!-- CONTACT FORM SECTION -->
         <div class="box has-background-black has-text-white mb-5">
           <h2 class="title is-3 has-text-white has-text-centered">
             Send a Message
           </h2>
 
-          <form id="contact_form">
-            <div class="field">
-              <label class="label has-text-white" for="contact_name"
-                >Your Name</label
-              >
-              <div class="control">
-                <input
-                  class="input is-medium is-dark"
-                  type="text"
-                  id="contact_name"
-                  name="contact_name"
-                  required
-                />
-              </div>
-            </div>
+          <!-- Message for users who are NOT signed in -->
+          <p
+            id="contactSignInMsg"
+            class="has-text-centered has-text-grey-light"
+          >
+            Please sign in to send us a message.
+          </p>
 
-            <div class="field">
-              <label class="label has-text-white" for="contact_email"
-                >Your Email</label
-              >
-              <div class="control">
-                <input
-                  class="input is-medium is-dark"
-                  type="email"
-                  id="contact_email"
-                  name="contact_email"
-                  required
-                />
+          <!-- Wrapper for the actual contact form (hidden by default when logged out) -->
+          <div id="contactFormWrapper" class="is-hidden">
+            <form id="contact_form">
+              <div class="field">
+                <label class="label has-text-white" for="contact_name"
+                  >Your Name</label
+                >
+                <div class="control">
+                  <input
+                    class="input is-medium is-dark"
+                    type="text"
+                    id="contact_name"
+                    name="contact_name"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div class="field">
-              <label class="label has-text-white" for="contact_message"
-                >Your Message</label
-              >
-              <div class="control">
-                <textarea
-                  class="textarea is-medium is-dark"
-                  id="contact_message"
-                  name="contact_message"
-                  rows="5"
-                  required
-                ></textarea>
+              <div class="field">
+                <label class="label has-text-white" for="contact_email"
+                  >Your Email</label
+                >
+                <div class="control">
+                  <input
+                    class="input is-medium is-dark"
+                    type="email"
+                    id="contact_email"
+                    name="contact_email"
+                    required
+                  />
+                </div>
               </div>
-            </div>
 
-            <div class="field is-grouped is-justify-content-center">
-              <div class="control">
-                <button class="button is-white is-fullwidth" type="submit">
-                  Send Message
-                </button>
+              <div class="field">
+                <label class="label has-text-white" for="contact_message"
+                  >Your Message</label
+                >
+                <div class="control">
+                  <textarea
+                    class="textarea is-medium is-dark"
+                    id="contact_message"
+                    name="contact_message"
+                    rows="5"
+                    required
+                  ></textarea>
+                </div>
               </div>
-            </div>
-          </form>
+
+              <div class="field is-grouped is-justify-content-center">
+                <div class="control">
+                  <button class="button is-white is-fullwidth" type="submit">
+                    Send Message
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
 
-        <!-- NEWSLETTER SIGNUP -->
+        <!-- NEWSLETTER SIGNUP (always visible) -->
         <div class="box has-background-black has-text-white">
           <h2 class="title is-3 has-text-white has-text-centered">
             Join Our Newsletter
@@ -201,7 +212,6 @@
     </main>
 
     <!-- FOOTER -->
-
     <footer class="footer has-background-dark has-text-white">
       <div class="content has-text-centered">
         <a href="https://www.instagram.com/kasperdancecrew/?hl=en" class="mr-3">
@@ -264,7 +274,6 @@
                   color: #000;
                   border: 2px solid #000;
                   border-radius: 6px;
-                  padding: 0.75rem;
                 "
               />
               <span class="icon is-small is-left">
@@ -361,7 +370,6 @@
                   color: #000;
                   border: 2px solid #000;
                   border-radius: 6px;
-                  padding: 0.75rem;
                 "
               />
               <span class="icon is-small is-left">

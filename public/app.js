@@ -6,7 +6,8 @@ let signinbtn = document.querySelector("#signinbtn");
 let signoutbtn = document.querySelector("#signoutbtn");
 let userEmailDisplay = document.querySelector("#userEmail");
 
-// --------- ADMIN CONFIG (PUT YOUR EMAIL HERE) --------- //
+// --------- ADMIN CONFIG (PUT YOUR EMAILS HERE) --------- //
+// *** keep all emails lowercase ***
 const adminEmails = [
   "admin1@gmail.com",
   "admin2@gmail.com",
@@ -58,8 +59,15 @@ if (signUpForm) {
 
     auth
       .createUserWithEmailAndPassword(user_email, user_pass)
-      .then(() => {
+      .then((cred) => {
         console.log("Sign-up successful for:", user_email);
+
+        // Add user to Firestore "users" collection
+        return db.collection("users").doc(cred.user.uid).set({
+          email: user_email.toLowerCase(),
+        });
+      })
+      .then(() => {
         if (smodal) smodal.classList.remove("is-active");
         signUpForm.reset();
         alert("Welcome! We are glad you joined us!");
@@ -86,10 +94,7 @@ if (signInForm) {
         console.log("Sign-in successful for:", user_email);
         if (smodal2) smodal2.classList.remove("is-active");
         signInForm.reset();
-        // added/updated this section
-        isCurrentUserAdmin = adminEmails.includes(userEmail);
-        alert(`Welcome Back!      Admin? ${isCurrentUserAdmin}`);
-        // --
+        alert("Welcome Back!");
       })
       .catch((error) => {
         console.error("Sign-in error:", error);
@@ -116,21 +121,22 @@ if (signoutbtn) {
 
 // ------------------------ AUTH STATE LISTENER ------------------------------- //
 const adminPanelAbout = document.querySelector("#adminPanelAbout");
-const adminPanelGallery = document.querySelector("#adminPanelGallery");
+
+// Contact page elements (only exist on contact.html)
+const contactFormWrapper = document.querySelector("#contactFormWrapper");
+const contactSignInMsg = document.querySelector("#contactSignInMsg");
 
 auth.onAuthStateChanged((user) => {
   console.log("Auth state changed. User:", user);
 
   if (user) {
+    // *** canonicalize email to lowercase
     const userEmail = (user.email || "").toLowerCase();
     console.log("Signed in as:", userEmail);
 
-    // check admin
+    // *** check admin once, globally
     isCurrentUserAdmin = adminEmails.includes(userEmail);
     console.log("Is current user admin?", isCurrentUserAdmin);
-
-    // DEBUG: show what Firebase thinks
-    // alert(`Signed in as: ${userEmail}\nAdmin? ${isCurrentUserAdmin}`);
 
     // Show correct auth buttons
     if (signinbtn) signinbtn.classList.add("is-hidden");
@@ -147,8 +153,11 @@ auth.onAuthStateChanged((user) => {
     if (adminPanelAbout) {
       adminPanelAbout.classList.toggle("is-hidden", !isCurrentUserAdmin);
     }
-    if (adminPanelGallery) {
-      adminPanelGallery.classList.toggle("is-hidden", !isCurrentUserAdmin);
+
+    // CONTACT PAGE VISIBILITY WHEN LOGGED IN
+    if (contactFormWrapper && contactSignInMsg) {
+      contactFormWrapper.classList.remove("is-hidden");
+      contactSignInMsg.classList.add("is-hidden");
     }
   } else {
     console.log("No user signed in");
@@ -166,13 +175,17 @@ auth.onAuthStateChanged((user) => {
     isCurrentUserAdmin = false;
 
     if (adminPanelAbout) adminPanelAbout.classList.add("is-hidden");
-    if (adminPanelGallery) adminPanelGallery.classList.add("is-hidden");
+
+    // CONTACT PAGE VISIBILITY WHEN LOGGED OUT
+    if (contactFormWrapper && contactSignInMsg) {
+      contactFormWrapper.classList.add("is-hidden");
+      contactSignInMsg.classList.remove("is-hidden");
+    }
   }
 
-  // Load data whenever auth changes
+  // *** Load data whenever auth changes (admin flag is now correct)
   loadPerformances();
   loadAuditions();
-  loadGalleryItems();
 });
 
 // ---------------- CONTACT FORM SUBMISSION ---------------- //
@@ -336,6 +349,19 @@ function loadPerformances() {
                     ${date} @ ${time} — ${location}
                   </p>
                   <p>${description}</p>
+                  <button 
+                    class="button has-background-white has-text-black mt-2 addButton"
+                    data-type="performance"
+                    data-id="${doc.id}"
+                    type="button">
+                    Add Event
+                  </button>
+                  <button 
+                    class="button is-success notifyButton mt-3 ml-4"
+                    data-type="performance"
+                    data-id="${doc.id}">
+                    <i class="fa-solid fa-bell"></i>
+                  </button>
                 </div>
               </div>
             `;
@@ -363,6 +389,7 @@ function loadPerformances() {
           }
         });
 
+        // Only attach delete handlers if admin
         if (adminContainer && isCurrentUserAdmin) {
           const deleteButtons =
             adminContainer.querySelectorAll("button[data-id]");
@@ -430,6 +457,19 @@ function loadAuditions() {
                     ${date} @ ${time} — ${location}
                   </p>
                   <p>${requirements}</p>
+                  <button 
+                    class="button has-background-white has-text-black mt-2 addButton"
+                    data-type="audition"
+                    data-id="${doc.id}"
+                    type="button">
+                    Add Event
+                  </button>
+                  <button 
+                    class="button is-success notifyButton mt-3 ml-4"
+                    data-type="audition"
+                    data-id="${doc.id}">
+                    <i class="fa-solid fa-bell"></i>
+                  </button>
                 </div>
               </div>
             `;
@@ -481,144 +521,287 @@ function loadAuditions() {
     );
 }
 
-/* ===================== ADMIN: GALLERY ITEMS ===================== */
+// add events to user document in users collection
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("addButton")) return;
 
-// Add gallery item (Gallery page admin form)
-const addGalleryForm = document.querySelector("#add_gallery_item_form");
-if (addGalleryForm) {
-  addGalleryForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+  const user = auth.currentUser;
 
-    const type = document.querySelector("#gallery_type").value; // image or video
-    const title = document.querySelector("#gallery_title").value;
-    const url = document.querySelector("#gallery_url").value;
-    const thumb = document.querySelector("#gallery_thumb").value;
-    const desc = document.querySelector("#gallery_desc").value;
+  if (!user) {
+    alert("You must be logged in to add an event!");
+    return;
+  }
 
-    db.collection("galleryItems")
-      .add({
-        type,
-        title,
-        url,
-        thumbnailUrl: thumb,
-        description: desc,
-      })
-      .then(() => {
-        alert("Gallery item added!");
-        addGalleryForm.reset();
-      })
-      .catch((err) => {
-        console.error("Add gallery error:", err);
-        alert("Error adding gallery item: " + err.message);
-      });
-  });
-}
+  const eventId = e.target.dataset.id;
+  const eventType = e.target.dataset.type;
+  const userRef = db.collection("users").doc(user.uid);
 
-// Load gallery items (public + admin)
-function loadGalleryItems() {
-  const publicContainer = document.querySelector("#gallery_public_list");
-  const adminContainer = document.querySelector("#gallery_items");
+  try {
+    const userDoc = await userRef.get();
+    const userData = userDoc.data() || {};
 
-  if (!publicContainer && !adminContainer) return;
-
-  db.collection("galleryItems")
-    .orderBy("title")
-    .onSnapshot(
-      (snapshot) => {
-        if (publicContainer) publicContainer.innerHTML = "";
-        if (adminContainer) adminContainer.innerHTML = "";
-
-        if (snapshot.empty) {
-          if (publicContainer) {
-            publicContainer.innerHTML = "<p>No gallery items yet.</p>";
-          }
-          return;
-        }
-
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-
-          const type = data.type || "image";
-          const title = data.title || "Gallery Item";
-          const url = data.url || "";
-          const thumb = data.thumbnailUrl || data.url || "";
-          const desc = data.description || "";
-
-          // PUBLIC view
-          if (publicContainer) {
-            const col = document.createElement("div");
-            col.classList.add("column", "is-one-third");
-
-            let mediaHtml = "";
-
-            if (type === "video") {
-              mediaHtml = `
-                <div class="video">
-                  <iframe src="${url}" frameborder="0" allowfullscreen style="width:100%;height:200px;"></iframe>
-                </div>`;
-            } else {
-              mediaHtml = `
-                <figure class="image">
-                  <img src="${thumb}" alt="${title}">
-                </figure>`;
-            }
-
-            col.innerHTML = `
-              <div class="card has-background-grey-darker has-text-white">
-                <div class="card-image">
-                  ${mediaHtml}
-                </div>
-                <div class="card-content">
-                  <p class="title is-5 has-text-white">${title}</p>
-                  <p class="has-text-grey-light">${desc}</p>
-                </div>
-              </div>
-            `;
-
-            publicContainer.appendChild(col);
-          }
-
-          // ADMIN view
-          if (adminContainer) {
-            const div = document.createElement("div");
-            div.classList.add("mb-3");
-
-            let html = `
-              <p><strong>${title}</strong> (${type})</p>
-              <p>${url}</p>
-              <p>${desc}</p>
-            `;
-
-            if (isCurrentUserAdmin) {
-              html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
-            }
-
-            html += "<hr />";
-            div.innerHTML = html;
-            adminContainer.appendChild(div);
-          }
-        });
-
-        if (adminContainer && isCurrentUserAdmin) {
-          const deleteButtons =
-            adminContainer.querySelectorAll("button[data-id]");
-          deleteButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const id = btn.getAttribute("data-id");
-              db.collection("galleryItems")
-                .doc(id)
-                .delete()
-                .then(() => alert("Gallery item deleted."))
-                .catch((err) => {
-                  console.error("Delete gallery error:", err);
-                  alert("Error deleting gallery item: " + err.message);
-                });
-            });
-          });
-        }
-      },
-      (error) => {
-        console.error("loadGalleryItems snapshot error:", error);
+    if (eventType === "performance") {
+      const addedPerformances = userData.addedPerformances || [];
+      if (addedPerformances.includes(eventId)) {
+        alert("You already added this performance!");
+        return;
       }
-    );
+      await userRef.set(
+        {
+          addedPerformances: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    } else if (eventType === "audition") {
+      const addedAuditions = userData.addedAuditions || [];
+      if (addedAuditions.includes(eventId)) {
+        alert("You already added this audition!");
+        return;
+      }
+      await userRef.set(
+        {
+          addedAuditions: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    }
+
+    alert("Event added!");
+    loadMyEvents(); // update My Events section immediately
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// remove events from user document in users collection
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("deleteEventButton")) return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const eventId = e.target.dataset.id;
+  const eventType = e.target.dataset.type;
+  const userRef = db.collection("users").doc(user.uid);
+
+  try {
+    if (eventType === "performance") {
+      await userRef.update({
+        addedPerformances: firebase.firestore.FieldValue.arrayRemove(eventId),
+      });
+    } else if (eventType === "audition") {
+      await userRef.update({
+        addedAuditions: firebase.firestore.FieldValue.arrayRemove(eventId),
+      });
+    }
+
+    // Remove the card from the DOM
+    const card = e.target.closest(".card");
+    if (card) card.remove();
+
+    alert("Event removed from My Events!");
+  } catch (error) {
+    console.error("Error removing event:", error);
+    alert("Error removing event: " + error.message);
+  }
+});
+
+// show added events in My Events
+const myEventsContainer = document.querySelector("#my_events");
+
+async function loadMyEvents() {
+  if (!myEventsContainer) return;
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    // If signed out, clear the container
+    myEventsContainer.innerHTML =
+      '<p class="has-text-grey-light has-text-centered">Log in and add events to see them here!</p>';
+    return;
+  }
+
+  try {
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const userData = userDoc.data() || {};
+
+    const addedPerformances = userData.addedPerformances || [];
+    const addedAuditions = userData.addedAuditions || [];
+
+    // Clear container
+    myEventsContainer.innerHTML = "";
+
+    // Load performances
+    for (let perfId of addedPerformances) {
+      const perfDoc = await db.collection("performances").doc(perfId).get();
+      if (perfDoc.exists) {
+        const data = perfDoc.data();
+        const card = document.createElement("div");
+        card.classList.add(
+          "card",
+          "has-background-grey-darker",
+          "has-text-white",
+          "mb-4"
+        );
+        card.innerHTML = `
+        <div class="card-content">
+          <p class="title is-4 has-text-white">${data.title}</p>
+          <p class="subtitle is-6 has-text-grey-light">${data.date} @ ${data.time} — ${data.location}</p>
+          <p>${data.description}</p>
+          <button class="button is-small is-danger mt-4 deleteEventButton" data-type="performance" data-id="${perfId}">Delete</button>
+        </div>
+      `;
+        myEventsContainer.appendChild(card);
+      }
+    }
+
+    // Load auditions
+    for (let audId of addedAuditions) {
+      const audDoc = await db.collection("auditions").doc(audId).get();
+      if (audDoc.exists) {
+        const data = audDoc.data();
+        const card = document.createElement("div");
+        card.classList.add(
+          "card",
+          "has-background-grey-darker",
+          "has-text-white",
+          "mb-4"
+        );
+        card.innerHTML = `
+        <div class="card-content">
+          <p class="title is-4 has-text-white">${data.season}</p>
+          <p class="subtitle is-6 has-text-grey-light">${data.date} @ ${data.time} — ${data.location}</p>
+          <p>${data.requirements}</p>
+          <button class="button is-small is-danger mt-4 deleteEventButton" data-type="audition" data-id="${audId}">Delete</button>
+        </div>
+      `;
+        myEventsContainer.appendChild(card);
+      }
+    }
+
+    if (addedPerformances.length === 0 && addedAuditions.length === 0) {
+      myEventsContainer.innerHTML =
+        '<p class="has-text-grey-light has-text-centered">You have not added any events yet.</p>';
+    }
+  } catch (error) {
+    console.error("Error loading user events:", error);
+  }
 }
+
+// Call loadMyEvents whenever auth changes
+auth.onAuthStateChanged((user) => {
+  loadMyEvents();
+});
+
+// notify button adding those events into user document in users collection
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("notifyButton")) return;
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You must be logged in to get notifications for events!");
+    return;
+  }
+
+  const eventId = e.target.dataset.id;
+  const eventType = e.target.dataset.type;
+  const userRef = db.collection("users").doc(user.uid);
+
+  try {
+    const userDoc = await userRef.get();
+    const userData = userDoc.data() || {};
+
+    if (eventType === "performance") {
+      const notifyPerformances = userData.notifyPerformances || [];
+      if (notifyPerformances.includes(eventId)) {
+        alert("You are already set to be notified for this performance!");
+        return;
+      }
+      await userRef.set(
+        {
+          notifyPerformances: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    } else if (eventType === "audition") {
+      const notifyAuditions = userData.notifyAuditions || [];
+      if (notifyAuditions.includes(eventId)) {
+        alert("You are already set to be notified for this audition!");
+        return;
+      }
+      await userRef.set(
+        {
+          notifyAuditions: firebase.firestore.FieldValue.arrayUnion(eventId),
+        },
+        { merge: true }
+      );
+    }
+
+    alert("You will be notified for this event!");
+  } catch (error) {
+    console.error("Error setting notification:", error);
+    alert("Error: " + error.message);
+  }
+});
+
+// Notify users of their selected events on About Us page
+async function showNotifications() {
+  const user = auth.currentUser;
+  if (!user) return; // no user signed in
+
+  try {
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const userData = userDoc.data() || {};
+
+    const notifyPerformances = userData.notifyPerformances || [];
+    const notifyAuditions = userData.notifyAuditions || [];
+
+    let performanceNames = [];
+    let auditionNames = [];
+
+    // Fetch performance titles
+    for (let perfId of notifyPerformances) {
+      const perfDoc = await db.collection("performances").doc(perfId).get();
+      if (perfDoc.exists) {
+        performanceNames.push(perfDoc.data().title);
+      }
+    }
+
+    // Fetch audition names
+    for (let audId of notifyAuditions) {
+      const audDoc = await db.collection("auditions").doc(audId).get();
+      if (audDoc.exists) {
+        auditionNames.push(audDoc.data().season);
+      }
+    }
+
+    // Create the message
+    let message = "";
+    if (performanceNames.length > 0) {
+      message += `Reminder that the following performances are coming up:\n- ${performanceNames.join(
+        "\n- "
+      )}\n\n`;
+    }
+    if (auditionNames.length > 0) {
+      message += `Reminder that the following auditions are coming up:\n- ${auditionNames.join(
+        "\n- "
+      )}\n`;
+    }
+
+    if (message) {
+      alert(message);
+    }
+  } catch (error) {
+    console.error("Error fetching notification events:", error);
+  }
+}
+
+// Call the function when the About Us page is loaded and user is signed in
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    // Optional: check if we are on About Us page
+    if (window.location.pathname.includes("about")) {
+      showNotifications();
+    }
+  }
+});

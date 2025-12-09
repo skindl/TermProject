@@ -48,8 +48,8 @@
           <div class="navbar-start">
             <a class="navbar-item" href="index.html">Home</a>
             <a class="navbar-item" href="about.html">About Us</a>
-            <a class="navbar-item" href="gallery.html">Gallery</a>
             <a class="navbar-item" href="contact.html">Contact Us</a>
+            <a class="navbar-item" href="gallery.html">Gallery</a>
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
@@ -112,7 +112,12 @@
                 id="sign_email"
                 type="email"
                 placeholder="Email input"
-                style="background: #fff; color: #000; border: 2px solid #000; border-radius: 6px; padding: 0.75rem"
+                style="
+                  background: #fff;
+                  color: #000;
+                  border: 2px solid #000;
+                  border-radius: 6px;
+                "
               />
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
@@ -127,15 +132,47 @@
           <div class="field">
             <label class="label" style="color: #fff">Password</label>
             <div class="control">
-              <input type="password" id="sign_pass" class="input" style="background: #fff; color: #000; border: 2px solid #000; border-radius: 6px; padding: 0.75rem" />
+              <input
+                type="password"
+                id="sign_pass"
+                class="input"
+                style="
+                  background: #fff;
+                  color: #000;
+                  border: 2px solid #000;
+                  border-radius: 6px;
+                "
+              />
             </div>
           </div>
 
           <p class="has-text-centered">
             <!-- submit and reset buttons -->
-            <input type="submit" value="Submit" class="button in-primary" style="background: #000; color: #fff; border: 2px solid #fff; border-radius: 6px; padding: 0.75rem 1rem" />
+            <input
+              type="submit"
+              value="Submit"
+              class="button in-primary"
+              style="
+                background: #000;
+                color: #fff;
+                border: 2px solid #fff;
+                border-radius: 6px;
+                padding: 0.75rem 1rem;
+              "
+            />
 
-            <input type="reset" value="Reset" class="button is-success" style="background: #000; color: #fff; border: 2px solid #fff; border-radius: 6px; padding: 0.75rem 1rem" />
+            <input
+              type="reset"
+              value="Reset"
+              class="button is-success"
+              style="
+                background: #000;
+                color: #fff;
+                border: 2px solid #fff;
+                border-radius: 6px;
+                padding: 0.75rem 1rem;
+              "
+            />
           </p>
         </form>
       </div>
@@ -170,7 +207,12 @@
                 id="sign_in_email"
                 type="email"
                 placeholder="Email input"
-                style="background: #fff; color: #000; border: 2px solid #000; border-radius: 6px; padding: 0.75rem"
+                style="
+                  background: #fff;
+                  color: #000;
+                  border: 2px solid #000;
+                  border-radius: 6px;
+                "
               />
               <span class="icon is-small is-left">
                 <i class="fas fa-envelope"></i>
@@ -185,15 +227,48 @@
           <div class="field">
             <label class="label" style="color: #fff">Password</label>
             <div class="control">
-              <input type="password" id="sign_in_pass" class="input" style="background: #fff; color: #000; border: 2px solid #000; border-radius: 6px; padding: 0.75rem" />
+              <input
+                type="password"
+                id="sign_in_pass"
+                class="input"
+                style="
+                  background: #fff;
+                  color: #000;
+                  border: 2px solid #000;
+                  border-radius: 6px;
+                  padding: 0.75rem;
+                "
+              />
             </div>
           </div>
 
           <p class="has-text-centered">
             <!-- submit and reset buttons -->
-            <input type="submit" value="Submit" class="button in-primary" style="background: #000; color: #fff; border: 2px solid #fff; border-radius: 6px; padding: 0.75rem 1rem" />
+            <input
+              type="submit"
+              value="Submit"
+              class="button in-primary"
+              style="
+                background: #000;
+                color: #fff;
+                border: 2px solid #fff;
+                border-radius: 6px;
+                padding: 0.75rem 1rem;
+              "
+            />
 
-            <input type="reset" value="Reset" class="button is-success" style="background: #000; color: #fff; border: 2px solid #fff; border-radius: 6px; padding: 0.75rem 1rem" />
+            <input
+              type="reset"
+              value="Reset"
+              class="button is-success"
+              style="
+                background: #000;
+                color: #fff;
+                border: 2px solid #fff;
+                border-radius: 6px;
+                padding: 0.75rem 1rem;
+              "
+            />
           </p>
         </form>
       </div>
@@ -279,7 +354,18 @@
     <script src="app.js"></script>
   </body>
 </html>
+zaSyD2Gbgw2_-1qiYbRiZB4jwaEztLfIPC5aU",
+        authDomain: "is-424-group-project.firebaseapp.com",
+        projectId: "is-424-group-project",
+        storageBucket: "is-424-group-project.firebasestorage.app",
+        messagingSenderId: "954935917465",
+        appId: "1:954935917465:web:7024e1ce6cce39f822f108",
+        measurementId: "G-2ERS9FXKMM",
+      };
 
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
     </script>
 
     <!-- Your app logic -->
