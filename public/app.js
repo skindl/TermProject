@@ -121,7 +121,6 @@ if (signoutbtn) {
 
 // ------------------------ AUTH STATE LISTENER ------------------------------- //
 const adminPanelAbout = document.querySelector("#adminPanelAbout");
-const adminPanelGallery = document.querySelector("#adminPanelGallery");
 
 // Contact page elements (only exist on contact.html)
 const contactFormWrapper = document.querySelector("#contactFormWrapper");
@@ -154,9 +153,6 @@ auth.onAuthStateChanged((user) => {
     if (adminPanelAbout) {
       adminPanelAbout.classList.toggle("is-hidden", !isCurrentUserAdmin);
     }
-    if (adminPanelGallery) {
-      adminPanelGallery.classList.toggle("is-hidden", !isCurrentUserAdmin);
-    }
 
     // CONTACT PAGE VISIBILITY WHEN LOGGED IN
     if (contactFormWrapper && contactSignInMsg) {
@@ -179,7 +175,6 @@ auth.onAuthStateChanged((user) => {
     isCurrentUserAdmin = false;
 
     if (adminPanelAbout) adminPanelAbout.classList.add("is-hidden");
-    if (adminPanelGallery) adminPanelGallery.classList.add("is-hidden");
 
     // CONTACT PAGE VISIBILITY WHEN LOGGED OUT
     if (contactFormWrapper && contactSignInMsg) {
@@ -191,7 +186,6 @@ auth.onAuthStateChanged((user) => {
   // *** Load data whenever auth changes (admin flag is now correct)
   loadPerformances();
   loadAuditions();
-  loadGalleryItems();
 });
 
 // ---------------- CONTACT FORM SUBMISSION ---------------- //
@@ -526,163 +520,6 @@ function loadAuditions() {
       }
     );
 }
-
-/* ===================== ADMIN: GALLERY ITEMS ===================== */
-
-// Add gallery item (Gallery page admin form)
-const addGalleryForm = document.querySelector("#add_gallery_item_form");
-if (addGalleryForm) {
-  addGalleryForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const type = document.querySelector("#gallery_type").value; // image or video
-    const title = document.querySelector("#gallery_title").value;
-    const url = document.querySelector("#gallery_url").value;
-    const thumb = document.querySelector("#gallery_thumb").value;
-    const desc = document.querySelector("#gallery_desc").value;
-
-    db.collection("galleryItems")
-      .add({
-        type,
-        title,
-        url,
-        thumbnailUrl: thumb,
-        description: desc,
-      })
-      .then(() => {
-        alert("Gallery item added!");
-        addGalleryForm.reset();
-      })
-      .catch((err) => {
-        console.error("Add gallery error:", err);
-        alert("Error adding gallery item: " + err.message);
-      });
-  });
-}
-
-// Load gallery items (public + admin)
-function loadGalleryItems() {
-  const publicContainer = document.querySelector("#gallery_public_list");
-  const adminContainer = document.querySelector("#gallery_items");
-
-  if (!publicContainer && !adminContainer) return;
-
-  db.collection("galleryItems")
-    .orderBy("title")
-    .onSnapshot(
-      (snapshot) => {
-        if (publicContainer) publicContainer.innerHTML = "";
-        if (adminContainer) adminContainer.innerHTML = "";
-
-        if (snapshot.empty) {
-          if (publicContainer) {
-            publicContainer.innerHTML = "<p>No gallery items yet.</p>";
-          }
-          return;
-        }
-
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-
-          const type = data.type || "image";
-          const title = data.title || "Gallery Item";
-          const url = data.url || "";
-          const thumb = data.thumbnailUrl || data.url || "";
-          const desc = data.description || "";
-
-          // PUBLIC view
-          if (publicContainer) {
-            const col = document.createElement("div");
-            col.classList.add("column", "is-one-third");
-
-            let mediaHtml = "";
-
-            if (type === "video") {
-              mediaHtml = `
-                <div class="video">
-                  <iframe src="${url}" frameborder="0" allowfullscreen style="width:100%;height:200px;"></iframe>
-                </div>`;
-            } else {
-              mediaHtml = `
-                <figure class="image">
-                  <img src="${thumb}" alt="${title}">
-                </figure>`;
-            }
-
-            col.innerHTML = `
-              <div class="card has-background-grey-darker has-text-white">
-                <div class="card-image">
-                  ${mediaHtml}
-                </div>
-                <div class="card-content">
-                  <p class="title is-5 has-text-white">${title}</p>
-                  <p class="has-text-grey-light">${desc}</p>
-                </div>
-              </div>
-            `;
-
-            publicContainer.appendChild(col);
-          }
-
-          // ADMIN view
-          if (adminContainer) {
-            const div = document.createElement("div");
-            div.classList.add("mb-3");
-
-            let html = `
-              <p><strong>${title}</strong> (${type})</p>
-              <p>${url}</p>
-              <p>${desc}</p>
-            `;
-
-            if (isCurrentUserAdmin) {
-              html += `<button class="button is-small is-danger" data-id="${doc.id}">Delete</button>`;
-            }
-
-            html += "<hr />";
-            div.innerHTML = html;
-            adminContainer.appendChild(div);
-          }
-        });
-
-        if (adminContainer && isCurrentUserAdmin) {
-          const deleteButtons =
-            adminContainer.querySelectorAll("button[data-id]");
-          deleteButtons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const id = btn.getAttribute("data-id");
-              db.collection("galleryItems")
-                .doc(id)
-                .delete()
-                .then(() => alert("Gallery item deleted."))
-                .catch((err) => {
-                  console.error("Delete gallery error:", err);
-                  alert("Error deleting gallery item: " + err.message);
-                });
-            });
-          });
-        }
-      },
-      (error) => {
-        console.error("loadGalleryItems snapshot error:", error);
-      }
-    );
-}
-
-// add button
-// document.addEventListener("click", (e) => {
-//   if (e.target.classList.contains("addButton")) {
-//     const user = auth.currentUser;
-
-//     if (!user) {
-//       alert("You must be logged in to add an event!");
-//       return;
-//     }
-
-//     alert("Event added!");
-//     console.log("Event added by:", user.email);
-//   }
-// });
 
 // add events to user document in users collection
 document.addEventListener("click", async (e) => {
