@@ -688,7 +688,15 @@ document.addEventListener("click", async (e) => {
   const userRef = db.collection("users").doc(user.uid);
 
   try {
+    const userDoc = await userRef.get();
+    const userData = userDoc.data() || {};
+
     if (eventType === "performance") {
+      const addedPerformances = userData.addedPerformances || [];
+      if (addedPerformances.includes(eventId)) {
+        alert("You already added this performance!");
+        return;
+      }
       await userRef.set(
         {
           addedPerformances: firebase.firestore.FieldValue.arrayUnion(eventId),
@@ -696,6 +704,11 @@ document.addEventListener("click", async (e) => {
         { merge: true }
       );
     } else if (eventType === "audition") {
+      const addedAuditions = userData.addedAuditions || [];
+      if (addedAuditions.includes(eventId)) {
+        alert("You already added this audition!");
+        return;
+      }
       await userRef.set(
         {
           addedAuditions: firebase.firestore.FieldValue.arrayUnion(eventId),
@@ -705,7 +718,128 @@ document.addEventListener("click", async (e) => {
     }
 
     alert("Event added!");
+    loadMyEvents(); // update My Events section immediately
   } catch (error) {
     console.error(error);
   }
+});
+
+// remove events from user document in users collection
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("deleteEventButton")) return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const eventId = e.target.dataset.id;
+  const eventType = e.target.dataset.type;
+  const userRef = db.collection("users").doc(user.uid);
+
+  try {
+    if (eventType === "performance") {
+      await userRef.update({
+        addedPerformances: firebase.firestore.FieldValue.arrayRemove(eventId),
+      });
+    } else if (eventType === "audition") {
+      await userRef.update({
+        addedAuditions: firebase.firestore.FieldValue.arrayRemove(eventId),
+      });
+    }
+
+    // Remove the card from the DOM
+    const card = e.target.closest(".card");
+    if (card) card.remove();
+
+    alert("Event removed from My Events!");
+  } catch (error) {
+    console.error("Error removing event:", error);
+    alert("Error removing event: " + error.message);
+  }
+});
+
+// show added events in My Events
+const myEventsContainer = document.querySelector("#my_events");
+
+async function loadMyEvents() {
+  if (!myEventsContainer) return;
+
+  const user = auth.currentUser;
+
+  if (!user) {
+    // If signed out, clear the container
+    myEventsContainer.innerHTML =
+      '<p class="has-text-grey-light has-text-centered">Log in and add events to see them here!</p>';
+    return;
+  }
+
+  try {
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const userData = userDoc.data() || {};
+
+    const addedPerformances = userData.addedPerformances || [];
+    const addedAuditions = userData.addedAuditions || [];
+
+    // Clear container
+    myEventsContainer.innerHTML = "";
+
+    // Load performances
+    for (let perfId of addedPerformances) {
+      const perfDoc = await db.collection("performances").doc(perfId).get();
+      if (perfDoc.exists) {
+        const data = perfDoc.data();
+        const card = document.createElement("div");
+        card.classList.add(
+          "card",
+          "has-background-grey-darker",
+          "has-text-white",
+          "mb-4"
+        );
+        card.innerHTML = `
+        <div class="card-content">
+          <p class="title is-4 has-text-white">${data.title}</p>
+          <p class="subtitle is-6 has-text-grey-light">${data.date} @ ${data.time} — ${data.location}</p>
+          <p>${data.description}</p>
+          <button class="button is-small is-danger mt-4 deleteEventButton" data-type="performance" data-id="${perfId}">Delete</button>
+        </div>
+      `;
+        myEventsContainer.appendChild(card);
+      }
+    }
+
+    // Load auditions
+    for (let audId of addedAuditions) {
+      const audDoc = await db.collection("auditions").doc(audId).get();
+      if (audDoc.exists) {
+        const data = audDoc.data();
+        const card = document.createElement("div");
+        card.classList.add(
+          "card",
+          "has-background-grey-darker",
+          "has-text-white",
+          "mb-4"
+        );
+        card.innerHTML = `
+        <div class="card-content">
+          <p class="title is-4 has-text-white">${data.season}</p>
+          <p class="subtitle is-6 has-text-grey-light">${data.date} @ ${data.time} — ${data.location}</p>
+          <p>${data.requirements}</p>
+          <button class="button is-small is-danger mt-4 deleteEventButton" data-type="audition" data-id="${audId}">Delete</button>
+        </div>
+      `;
+        myEventsContainer.appendChild(card);
+      }
+    }
+
+    if (addedPerformances.length === 0 && addedAuditions.length === 0) {
+      myEventsContainer.innerHTML =
+        '<p class="has-text-grey-light has-text-centered">You have not added any events yet.</p>';
+    }
+  } catch (error) {
+    console.error("Error loading user events:", error);
+  }
+}
+
+// Call loadMyEvents whenever auth changes
+auth.onAuthStateChanged((user) => {
+  loadMyEvents();
 });
