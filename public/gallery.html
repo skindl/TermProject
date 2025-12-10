@@ -12,6 +12,19 @@
       src="https://kit.fontawesome.com/8a80b728dc.js"
       crossorigin="anonymous"
     ></script>
+    <style>
+      /* fixing navbar hover color on dark background */
+      .navbar.has-background-black .navbar-item:hover {
+        background-color: #111;
+        color: #fff;
+      }
+
+      /* active page styling */
+      .navbar.has-background-black .navbar-item.is-active {
+        background-color: #222;
+        color: #fff;
+      }
+    </style>
   </head>
   <body class="has-background-black has-text-white">
     <!-- NAVBAR -->
@@ -22,7 +35,7 @@
     >
       <div class="container">
         <div class="navbar-brand">
-          <a class="navbar-item has-text-weight-bold" href="index.html">
+          <a class="navbar-item has-text-white has-text-weight-bold" href="index.html">
             <img
               src="images/logo2.png"
               alt="Kasper Dance Crew logo"
@@ -46,10 +59,10 @@
 
         <div id="mainNav" class="navbar-menu has-background-black">
           <div class="navbar-start">
-            <a class="navbar-item" href="index.html">Home</a>
-            <a class="navbar-item" href="about.html">About Us</a>
-            <a class="navbar-item" href="gallery.html">Gallery</a>
-            <a class="navbar-item" href="contact.html">Contact Us</a>
+            <a class="navbar-item has-text-white" href="index.html">Home</a>
+            <a class="navbar-item has-text-white" href="about.html">About Us</a>
+            <a class="navbar-item has-text-white" href="gallery.html">Gallery</a>
+            <a class="navbar-item has-text-white" href="contact.html">Contact Us</a>
           </div>
           <div class="navbar-end">
             <div class="navbar-item">
